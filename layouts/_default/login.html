@@ -1,0 +1,55 @@
+{{ define "main" }}
+<div class="waline-custom-login-container">
+  <div class="waline-custom-login-card">
+    <!-- Brand Header -->
+    <div class="waline-login-header">
+      {{ if .Site.Params.waline.customLogin.brandLogo }}
+      <img src="{{ .Site.Params.waline.customLogin.brandLogo | absURL }}"
+           alt="{{ .Site.Params.waline.customLogin.brandName | default .Site.Title }}"
+           class="waline-login-logo">
+      {{ end }}
+      <h1 class="waline-login-title">
+        {{ .Site.Params.waline.customLogin.brandName | default .Site.Title }}
+      </h1>
+      <p class="waline-login-subtitle">登录评论系统</p>
+    </div>
+
+    <!-- OAuth Buttons (if enabled) -->
+    {{ if or .Site.Params.waline.oauth.twitter .Site.Params.waline.oauth.google .Site.Params.waline.oauth.github }}
+    <div class="waline-oauth-section">
+      {{ partial "comments/oauth-buttons.html" . }}
+
+      <div class="waline-divider">
+        <span>或使用邮箱登录</span>
+      </div>
+    </div>
+    {{ end }}
+
+    <!-- Email/Password Login Form -->
+    {{ partial "comments/login-form.html" . }}
+
+    <!-- Footer Links -->
+    <div class="waline-login-footer">
+      <p>
+        登录即表示您同意我们的
+        <a href="{{ .Site.Params.waline.customLogin.termsURL | default "/terms" }}">服务条款</a>
+        和
+        <a href="{{ .Site.Params.waline.customLogin.privacyURL | default "/privacy" }}">隐私政策</a>
+      </p>
+      <a href="{{ .Site.BaseURL }}" class="waline-back-link">← 返回首页</a>
+    </div>
+  </div>
+</div>
+
+<!-- Load Waline Authentication JavaScript -->
+<script src="{{ "js/waline-auth.js" | absURL }}"></script>
+<script src="{{ "js/oauth-handlers.js" | absURL }}"></script>
+
+<script>
+  // Initialize Waline Auth with server URL
+  const walineAuth = new WalineAuth({
+    serverURL: '{{ .Site.Params.waline.serverURL }}',
+    redirectURL: '{{ .Site.Params.waline.customLogin.redirectURL | default .Site.BaseURL }}'
+  });
+</script>
+{{ end }}

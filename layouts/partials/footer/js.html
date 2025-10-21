@@ -1,0 +1,137 @@
+<!-- 性能优化的JavaScript加载 -->
+
+<!-- 关键JavaScript - 内联以避免阻塞 -->
+<script>
+// 关键性能优化 - 预连接到重要域名
+(function() {
+  const preconnectUrls = [
+    'https://imagedelivery.net',
+    'https://www.googletagmanager.com'
+  ];
+
+  preconnectUrls.forEach(url => {
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = url;
+    link.crossOrigin = 'anonymous';
+    document.head.appendChild(link);
+  });
+})();
+
+// 小红书推广图片轮播
+(function() {
+  function initRedbookCarousel() {
+    // 侧边栏轮播
+    const sidebarCarousels = document.querySelectorAll('.redbook-carousel-wrapper');
+    console.log('找到侧边栏轮播容器数量:', sidebarCarousels.length);
+
+    sidebarCarousels.forEach(function(carousel, index) {
+      const items = carousel.querySelectorAll('.redbook-carousel-item');
+      console.log('侧边栏轮播', index, '中的图片数量:', items.length);
+
+      if (items.length <= 1) return;
+
+      let currentIndex = 0;
+
+      function showNextImage() {
+        // 隐藏当前图片
+        items[currentIndex].style.display = 'none';
+
+        // 切换到下一张
+        currentIndex = (currentIndex + 1) % items.length;
+
+        // 显示下一张图片
+        items[currentIndex].style.display = 'block';
+
+        console.log('侧边栏轮播', index, '切换到图片:', currentIndex);
+      }
+
+      // 每5分钟(300000毫秒)轮换一次
+      setInterval(showNextImage, 300000);
+
+      console.log('侧边栏轮播', index, '已初始化，间隔:5分钟');
+    });
+
+    // Footer轮播
+    const footerCarousels = document.querySelectorAll('.redbook-footer-carousel');
+    console.log('找到Footer轮播容器数量:', footerCarousels.length);
+
+    footerCarousels.forEach(function(carousel, index) {
+      const items = carousel.querySelectorAll('.redbook-footer-item');
+      console.log('Footer轮播', index, '中的图片数量:', items.length);
+
+      if (items.length <= 1) return;
+
+      let currentIndex = 0;
+
+      function showNextImage() {
+        // 隐藏当前图片
+        items[currentIndex].style.display = 'none';
+
+        // 切换到下一张
+        currentIndex = (currentIndex + 1) % items.length;
+
+        // 显示下一张图片
+        items[currentIndex].style.display = 'block';
+
+        console.log('Footer轮播', index, '切换到图片:', currentIndex);
+      }
+
+      // 每5分钟(300000毫秒)轮换一次
+      setInterval(showNextImage, 300000);
+
+      console.log('Footer轮播', index, '已初始化，间隔:5分钟');
+    });
+  }
+
+  // DOM加载完成后初始化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initRedbookCarousel);
+  } else {
+    initRedbookCarousel();
+  }
+})();
+</script>
+
+<!-- 懒加载脚本 - 异步加载 -->
+{{- $lazyLoadingJS := resources.Get "js/lazy-loading.js" -}}
+{{- if $lazyLoadingJS -}}
+  {{- if eq hugo.Environment "development" -}}
+    <script src="{{ $lazyLoadingJS.RelPermalink }}" async></script>
+  {{- else -}}
+    {{- $lazyLoadingJS = $lazyLoadingJS | minify | fingerprint -}}
+    <script src="{{ $lazyLoadingJS.RelPermalink }}" integrity="{{ $lazyLoadingJS.Data.Integrity }}" crossorigin="anonymous" async></script>
+  {{- end -}}
+{{- else -}}
+  <!-- Fallback - 从static目录加载 -->
+  <script src="{{ "js/lazy-loading.js" | relURL }}" async></script>
+{{- end -}}
+
+<!-- 添加懒加载样式 -->
+<style>
+  img.lazyload {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  img.lazyloaded {
+    opacity: 1;
+  }
+  
+  img.lazyload-error {
+    opacity: 0.3;
+    filter: grayscale(100%);
+  }
+  
+  /* 占位符动画效果 */
+  .lazyload-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 2s infinite;
+  }
+  
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+</style>

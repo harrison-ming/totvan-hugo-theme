@@ -1,0 +1,70 @@
+{{- /*
+导航栏模板 - 显示热门分类 + 下拉菜单
+*/}}
+
+{{- $page := .page }}
+
+{{- /* 获取所有分类并排序 */ -}}
+{{- $categories := slice -}}
+{{- range $name, $taxonomy := site.Taxonomies.categories -}}
+  {{- $count := len $taxonomy -}}
+  {{- if ge $count 2 -}}
+    {{- $categories = $categories | append (dict "name" $name "count" $count) -}}
+  {{- end -}}
+{{- end -}}
+{{- $categories = sort $categories "count" "desc" -}}
+
+{{- /* 前7个显示在导航栏，其余放下拉菜单 */ -}}
+{{- $topCategories := $categories | first 7 -}}
+{{- $moreCategories := slice -}}
+{{- if gt (len $categories) 7 -}}
+  {{- $moreCategories = after 7 $categories | first 8 -}}
+{{- end -}}
+
+<nav class="bg-primary-500 shadow-md">
+  <div class="max-w-7xl mx-auto px-2 md:px-4">
+    <ul class="flex overflow-x-auto scrollbar-hide">
+
+      {{/* 首页 */}}
+      <li class="flex-shrink-0">
+        <a href="{{ site.BaseURL }}"
+           class="nav-link block text-white font-semibold hover:bg-primary-600 transition-colors whitespace-nowrap {{ if $page.IsHome }}bg-primary-600{{ end }}"
+           {{ if $page.IsHome }}aria-current="page"{{ end }}>
+          首页
+        </a>
+      </li>
+
+      {{/* 热门分类 1-7 */}}
+      {{- range $cat := $topCategories -}}
+      {{- $catURL := printf "/categories/%s/" ($cat.name | urlize) -}}
+      <li class="flex-shrink-0">
+        <a href="{{ $catURL | relURL }}"
+           class="nav-link block text-white hover:bg-primary-600 transition-colors whitespace-nowrap {{ if eq $page.RelPermalink $catURL }}bg-primary-600{{ end }}"
+           {{ if eq $page.RelPermalink $catURL }}aria-current="page"{{ end }}>
+          {{ $cat.name }}
+        </a>
+      </li>
+      {{- end -}}
+
+      {{/* 全部分类链接 */}}
+      <li class="flex-shrink-0">
+        <a href="{{ "/categories/" | relURL }}"
+           class="nav-link block text-white hover:bg-primary-600 transition-colors whitespace-nowrap">
+          全部分类
+        </a>
+      </li>
+
+      {{/* 搜索按钮 - 暂时隐藏,等待后续实现搜索功能 */}}
+      <!--
+      <li class="ml-auto flex-shrink-0">
+        <button class="nav-search-btn search-btn block text-white hover:bg-primary-600 transition-colors toggle-button" data-target="search-bar">
+          <svg width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+          </svg>
+        </button>
+      </li>
+      -->
+
+    </ul>
+  </div>
+</nav> 

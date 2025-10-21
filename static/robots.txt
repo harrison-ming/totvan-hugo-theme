@@ -1,0 +1,27 @@
+# robots.txt
+# This file will be deployed to the root of your website
+# Make sure to update the Sitemap URL with your actual domain
+
+User-agent: *
+Allow: /
+
+# Allow all content including pages, tags, categories, and search
+Allow: /page/
+Allow: /tags/
+Allow: /categories/
+Allow: /search
+Allow: /*?*
+
+# Allow images and assets
+Allow: /images/
+Allow: /css/
+Allow: /js/
+Allow: /*.svg
+Allow: /*.jpg
+Allow: /*.jpeg
+Allow: /*.png
+Allow: /*.gif
+
+# Sitemap - update this URL with your actual domain
+# Example: Sitemap: https://example.com/sitemap.xml
+Sitemap: {{ .Site.BaseURL }}sitemap.xml 

@@ -1,0 +1,54 @@
+<div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+
+  <div class="pt-8 pb-4">
+    <div class="flex items-center mb-4">
+      <div class="flex items-center">
+        <img src="{{ site.Params.logo.url | default "/images/logo.png" }}" width="{{ site.Params.logo.width | default 60 }}" height="{{ site.Params.logo.height | default 60 }}" alt="{{ site.Params.logo.alt | default site.Title }}" class="mr-2" style="max-width: {{ site.Params.logo.width | default 60 }}px; max-height: {{ site.Params.logo.height | default 60 }}px; width: {{ site.Params.logo.width | default 60 }}px; height: {{ site.Params.logo.height | default 60 }}px; object-fit: contain;">
+        <span class="text-2xl font-semibold uppercase">{{ site.Title }}</span>
+      </div>
+      <div class="mx-auto flex items-center gap-4">
+        {{- if site.Params.social.twitter -}}
+        <ul id="social-media" class="flex items-center">
+          <li>
+            <a class="w-14 h-14 rounded-full bg-primary-500 hover:bg-primary-600 flex items-center justify-center text-white transition duration-300" href="{{ site.Params.social.twitter }}" target="_blank" rel="noopener noreferrer">
+              <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/>
+              </svg>
+            </a>
+          </li>
+        </ul>
+        {{- end -}}
+        <!-- 小红书推广轮播（可配置） -->
+        {{- if site.Params.social.redbook -}}
+        <div class="redbook-footer-carousel">
+          {{- range $index, $item := site.Params.social.redbook -}}
+          <a href="{{ $item.url }}" target="_blank" rel="noopener noreferrer"
+             class="redbook-footer-item hover:opacity-80 transition duration-300"
+             {{- if ne $index 0 }} style="display: none;"{{ end }}>
+            <img src="{{ $item.qrcode }}"
+                 alt="{{ $item.title | default "关注我们的小红书" }}"
+                 class="rounded-lg shadow-lg"
+                 style="height: 120px; width: auto; object-fit: contain;">
+          </a>
+          {{- end -}}
+        </div>
+        {{- end -}}
+      </div>
+    </div>
+    <p class="font-semibold">
+      ToTVan - 温哥华生活资讯<br>探索温哥华的精彩生活
+    </p>
+  </div>
+
+  <div class="my-8">
+    <ul class="flex items-center space-x-4 justify-start flex-wrap">
+      {{ range site.Menus.main }}
+        <li class="my-1"><a class="decoration-auto hover:underline font-semibold" href="{{ .URL }}">{{ .Name }}</a></li>
+      {{ end }}
+    </ul>
+  </div>
+
+  <div class="border-t pt-4 flex justify-center">
+    <p class="text-sm">Copyright © {{ now.Year }}. All rights reserved.</p>
+  </div>
+</div> 

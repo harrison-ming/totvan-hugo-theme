@@ -1,0 +1,18 @@
+{{- /*
+  图片占位符组件 - 当文章没有特色图片时显示
+
+  参数:
+  - size: SVG图标的大小类 (默认: "w-16 h-16")
+
+  使用示例:
+  {{- partial "content/image-placeholder.html" (dict "size" "w-16 h-16") -}}
+  {{- partial "content/image-placeholder.html" (dict "size" "w-8 h-8") -}}
+*/ -}}
+
+{{- $size := .size | default "w-16 h-16" -}}
+
+<div class="w-full h-full flex items-center justify-center bg-gray-200">
+  <svg class="{{ $size }} text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+  </svg>
+</div>

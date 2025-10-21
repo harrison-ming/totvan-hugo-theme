@@ -1,0 +1,19 @@
+# Hugo
+/resources/_gen/
+/public/
+.hugo_build.lock
+
+# macOS
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Temporary files
+*.log
+*.tmp

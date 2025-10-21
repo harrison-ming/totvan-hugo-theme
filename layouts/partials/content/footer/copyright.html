@@ -1,0 +1,10 @@
+<div class="text-center md:text-left text-sm text-gray-500">
+  <p>&copy; {{ now.Format "2006" }} {{ site.Title }}. 保留所有权利。</p>
+  <p class="mt-2">
+    <a href="/terms-of-service/" class="hover:text-primary-600 transition-colors mr-4">服务条款</a>
+    <a href="/privacy-policy/" class="hover:text-primary-600 transition-colors mr-4">隐私政策</a>
+    {{- with site.Params.contact.email -}}
+    <a href="mailto:{{ . }}" class="hover:text-primary-600 transition-colors">联系我们</a>
+    {{- end -}}
+  </p>
+</div> 

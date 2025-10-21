@@ -1,0 +1,16 @@
+<!-- 最新文章组件 -->
+<div class="bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+  <h3 class="text-xl font-bold mb-4">最新文章</h3>
+
+  {{- $recentPosts := where .Site.RegularPages "Section" "posts" | first 5 -}}
+
+  {{- if $recentPosts -}}
+  <div class="space-y-4">
+    {{- range $recentPosts -}}
+      {{- partial "content/list-post.html" . -}}
+    {{- end -}}
+  </div>
+  {{- else -}}
+  <p class="text-gray-500 text-sm">暂无文章</p>
+  {{- end -}}
+</div>

@@ -1,0 +1,59 @@
+{{ define "main" }}
+
+{{- partial "content/breadcrumb.html" . -}}
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
+
+  <section class="md:col-span-2">
+
+    <h2 class="text-2xl font-bold mb-6">{{ .Title | humanize }}</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      {{- range .Data.Terms.ByCount -}}
+
+      <a href="{{ .Page.RelPermalink }}" class="category-card bg-white border border-gray-200 rounded-xl p-4 transition-all hover:bg-primary-50 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="category-icon w-8 h-8 rounded-full flex items-center justify-center text-white text-base flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+            {{ $categoryName := .Page.LinkTitle | lower }}
+            {{ if or (in $categoryName "时事") (in $categoryName "新闻") }}📰
+            {{ else if or (in $categoryName "生活") (in $categoryName "社区") }}🏠
+            {{ else if or (in $categoryName "文化") (in $categoryName "艺术") }}🎨
+            {{ else if or (in $categoryName "体育") (in $categoryName "运动") }}⚽
+            {{ else if or (in $categoryName "政治") (in $categoryName "选举") }}🏛️
+            {{ else if or (in $categoryName "经济") (in $categoryName "财经") (in $categoryName "房地产") }}💼
+            {{ else if or (in $categoryName "健康") (in $categoryName "医疗") }}🏥
+            {{ else if or (in $categoryName "法律") (in $categoryName "司法") }}⚖️
+            {{ else if or (in $categoryName "旅游") (in $categoryName "旅行") }}✈️
+            {{ else if or (in $categoryName "美食") (in $categoryName "餐饮") }}🍽️
+            {{ else if or (in $categoryName "教育") (in $categoryName "学校") }}📚
+            {{ else if or (in $categoryName "科技") (in $categoryName "技术") }}💻
+            {{ else if or (in $categoryName "娱乐") (in $categoryName "电影") (in $categoryName "音乐") }}🎬
+            {{ else if or (in $categoryName "环境") (in $categoryName "气候") }}🌍
+            {{ else if or (in $categoryName "交通") (in $categoryName "运输") }}🚗
+            {{ else if in $categoryName "天气" }}🌤️
+            {{ else if or (in $categoryName "犯罪") (in $categoryName "安全") }}🚨
+            {{ else if in $categoryName "活动" }}🎉
+            {{ else }}📁
+            {{ end }}
+          </div>
+          <span class="font-semibold text-gray-900">{{ .Page.LinkTitle | humanize }}</span>
+        </div>
+        <span class="category-count bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-medium min-w-10 text-center">{{ .Count }}</span>
+      </a>
+
+      {{ end }}
+
+    </div>
+
+  </section>
+
+  <aside class="md:col-span-1">
+
+    {{- partial "content/aside.html" . -}}
+
+  </aside>
+
+  </div>
+
+{{ end }} 

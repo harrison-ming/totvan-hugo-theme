@@ -1,0 +1,17 @@
+name = "ToTVan Hugo Theme"
+license = "MIT"
+licenselink = "https://github.com/harrison-ming/totvan-hugo-theme/blob/main/LICENSE"
+description = "现代化的 Hugo 资讯站点主题 - 支持响应式设计、SEO优化、AdSense集成、Waline评论系统"
+homepage = "https://github.com/harrison-ming/totvan-hugo-theme"
+tags = ["blog", "news", "responsive", "adsense", "seo", "chinese", "waline", "tailwindcss"]
+features = ["responsive", "adsense", "seo", "lazy-loading", "structured-data", "waline-comments", "breadcrumbs"]
+min_version = "0.116.0"
+
+[author]
+  name = "Harrison Ming"
+  homepage = "https://github.com/harrison-ming"
+
+[original]
+  name = "pehtheme-hugo"
+  homepage = "https://github.com/fauzanmy/pehtheme-hugo"
+  repo = "https://github.com/fauzanmy/pehtheme-hugo"

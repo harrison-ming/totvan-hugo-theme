@@ -1,0 +1,56 @@
+<!-- 优化的图片组件 - 支持lazy loading和多种优化 -->
+{{- $src := .src -}}
+{{- $alt := .alt | default "" -}}
+{{- $class := .class | default "" -}}
+{{- $loading := .loading | default "lazy" -}}
+{{- $sizes := .sizes | default "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" -}}
+{{- $width := .width | default "" -}}
+{{- $height := .height | default "" -}}
+{{- $priority := .priority | default false -}}
+
+{{- if $src -}}
+  {{- if hasPrefix $src "http" -}}
+    <!-- 外部图片 (CDN) - 添加lazy loading和优化属性 -->
+    <img 
+      src="{{ if $priority }}{{ $src }}{{ else }}data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E{{ end }}"
+      {{ if not $priority }}data-src="{{ $src }}"{{ end }}
+      alt="{{ $alt }}"
+      class="{{ $class }} {{ if not $priority }}lazyload{{ end }}"
+      loading="{{ $loading }}"
+      decoding="{{ if $priority }}sync{{ else }}async{{ end }}"
+      {{- if $width }} width="{{ $width }}"{{ end }}
+      {{- if $height }} height="{{ $height }}"{{ end }}
+      {{- if not $priority }} data-sizes="auto"{{ end }}>
+  {{- else -}}
+    <!-- 本地图片 - Hugo资源处理 -->
+    {{- with resources.Get $src -}}
+      {{- $optimized := . -}}
+      {{- if ge .Width 800 -}}
+        {{- $optimized = .Resize "800x" -}}
+      {{- end -}}
+      
+      <img 
+        src="{{ if $priority }}{{ $optimized.RelPermalink }}{{ else }}data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E{{ end }}"
+        {{ if not $priority }}data-src="{{ $optimized.RelPermalink }}"{{ end }}
+        alt="{{ $alt }}"
+        class="{{ $class }} {{ if not $priority }}lazyload{{ end }}"
+        loading="{{ $loading }}"
+        decoding="{{ if $priority }}sync{{ else }}async{{ end }}"
+        width="{{ $optimized.Width }}"
+        height="{{ $optimized.Height }}"
+        {{- if not $priority }} data-sizes="auto"{{ end }}>
+    {{- else -}}
+      <!-- 图片不存在时的占位符 -->
+      <div class="{{ $class }} flex items-center justify-center bg-gray-200 text-gray-500">
+        <span>图片加载失败</span>
+      </div>
+    {{- end -}}
+  {{- end -}}
+{{- else -}}
+  <!-- 无图片时的占位符 -->
+  <div class="{{ $class }} flex items-center justify-center bg-gray-200 text-gray-500">
+    <svg class="w-12 h-12 opacity-50" fill="currentColor" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+    </svg>
+  </div>
+{{- end -}}

@@ -1,0 +1,69 @@
+{{ if not .IsHome }}
+<!-- 面包屑导航区域 -->
+<div class="breadcrumb-header">
+  <div class="breadcrumb-wrapper">
+    <!-- 面包屑导航 - SEO和内链优化版本 -->
+    <nav aria-label="面包屑导航" class="breadcrumb-nav">
+      <ol class="breadcrumb-list" itemscope itemtype="https://schema.org/BreadcrumbList">
+
+        <!-- 首页链接 -->
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ .Site.BaseURL }}"
+             class="breadcrumb-link"
+             itemprop="item">
+            <span itemprop="name">首页</span>
+          </a>
+          <meta itemprop="position" content="1" />
+        </li>
+
+        <!-- 分类链接 (如果存在) -->
+        {{ if and .Params.categories (eq .Type "posts") }}
+          {{ $category := index .Params.categories 0 }}
+          <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="breadcrumb-separator">></span>
+            <a href="{{ printf "/categories/%s/" $category | urlize | relURL }}"
+               class="breadcrumb-link"
+               itemprop="item">
+              <span itemprop="name">{{ $category }}</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </li>
+        {{ else if eq .Type "posts" }}
+          <!-- 文章列表页链接 -->
+          <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="breadcrumb-separator">></span>
+            <a href="{{ "/posts/" | relURL }}"
+               class="breadcrumb-link"
+               itemprop="item">
+              <span itemprop="name">文章</span>
+            </a>
+            <meta itemprop="position" content="2" />
+          </li>
+        {{ end }}
+
+        <!-- 当前页面 - 使用H1标签 -->
+        <li class="breadcrumb-item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <span class="breadcrumb-separator">></span>
+          <h1 class="breadcrumb-current" itemprop="name">
+            {{ if gt (len .Title) 50 }}
+              {{ .Title | truncate 47 }}
+            {{ else }}
+              {{ .Title }}
+            {{ end }}
+          </h1>
+          <meta itemprop="position" content="{{ if .Params.categories }}3{{ else }}3{{ end }}" />
+        </li>
+      </ol>
+    </nav>
+
+    <!-- 文章数量提示 (仅分类页显示) -->
+    {{ if or (eq .Kind "taxonomy") (eq .Kind "term") }}
+      {{ $count := len .Pages }}
+      <div class="article-count">
+        共 <span class="article-count-number">{{ $count }}</span> 篇文章
+      </div>
+    {{ end }}
+  </div>
+</div>
+
+{{ end }} 

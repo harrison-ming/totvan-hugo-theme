@@ -1,0 +1,42 @@
+<!-- 热门分类组件 -->
+<div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+  <h3 class="text-lg font-bold mb-4 text-gray-800 flex items-center">
+    📂 热门分类
+  </h3>
+  
+  {{- $categories := slice -}}
+  {{- range $name, $taxonomy := .Site.Taxonomies.categories -}}
+    {{- $count := len $taxonomy -}}
+    {{- if ge $count 2 -}}
+      {{- $categories = $categories | append (dict "name" $name "count" $count) -}}
+    {{- end -}}
+  {{- end -}}
+  
+  {{- $categories = sort $categories "count" "desc" -}}
+  {{- $categories = $categories | first 8 -}}
+  
+  {{- if $categories -}}
+  <div class="space-y-2">
+    {{- range $cat := $categories -}}
+    <a href="{{ printf "/categories/%s/" $cat.name | urlize | relURL }}"
+       class="flex items-center justify-between p-3 rounded-xl hover:bg-primary-50 transition-colors group">
+      <span class="font-medium text-gray-700 group-hover:text-primary-800">
+        📁 {{ $cat.name }}
+      </span>
+      <span class="bg-primary-100 text-primary-800 px-2 py-1 rounded-full text-xs font-medium">
+        {{ $cat.count }}
+      </span>
+    </a>
+    {{- end -}}
+  </div>
+
+  <div class="mt-4 text-center">
+    <a href="{{ "/categories/" | relURL }}"
+       class="text-sm text-primary-600 hover:text-primary-800 hover:underline transition-colors">
+      查看所有分类 →
+    </a>
+  </div>
+  {{- else -}}
+  <p class="text-gray-500 text-sm">暂无分类</p>
+  {{- end -}}
+</div>

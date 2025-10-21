@@ -1,0 +1,48 @@
+# 缓存和安全HTTP头配置
+# 适用于 Netlify, Vercel 等部署平台
+
+# 全局安全头
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# HTML文件 - 短期缓存
+/*.html
+  Cache-Control: public, max-age=0, s-maxage=86400, must-revalidate
+
+# 根目录HTML文件
+/
+  Cache-Control: public, max-age=0, s-maxage=3600, must-revalidate
+
+# CSS和JS资源 - 长期缓存（fingerprinted文件）
+/css/*
+  Cache-Control: public, max-age=31536000, immutable
+  
+/js/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 图片资源 - 长期缓存
+/images/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# 静态资源
+/favicon.*
+  Cache-Control: public, max-age=86400
+
+# XML文件（sitemap等）
+/*.xml
+  Cache-Control: public, max-age=3600, s-maxage=86400
+
+# 字体文件
+/*.woff2
+  Cache-Control: public, max-age=31536000, immutable
+  
+/*.woff
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service Worker（如果有）
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate

@@ -1,0 +1,84 @@
+{{ printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" | safeHTML }}
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <!-- Homepage (highest priority) -->
+  <url>
+    <loc>{{ .Site.BaseURL }}</loc>
+    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <!-- Static pages (About, Privacy, etc) -->
+  {{ range .Site.RegularPages }}
+    {{ if and (eq .Section "") (not .IsHome) }}
+    <url>
+      <loc>{{ .Permalink }}</loc>
+      <lastmod>{{ .Lastmod.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.9</priority>
+    </url>
+    {{ end }}
+  {{ end }}
+  
+  <!-- Posts list page -->
+  <url>
+    <loc>{{ "/posts/" | absURL }}</loc>
+    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- All blog posts (prioritized by date) -->
+  {{ range where .Site.RegularPages "Section" "posts" }}
+    {{ if not .Draft }}
+    <url>
+      <loc>{{ .Permalink }}</loc>
+      <lastmod>{{ .Lastmod.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+      <changefreq>{{ if lt (.Date.Unix) (sub now.Unix 2592000) }}monthly{{ else }}weekly{{ end }}</changefreq>
+      <priority>{{ if lt (.Date.Unix) (sub now.Unix 7776000) }}0.6{{ else }}0.8{{ end }}</priority>
+    </url>
+    {{ end }}
+  {{ end }}
+  
+  <!-- Categories main page -->
+  <url>
+    <loc>{{ "/categories/" | absURL }}</loc>
+    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Important categories only (minimum 3 posts) -->
+  {{ range $name, $taxonomy := .Site.Taxonomies.categories }}
+    {{ if ge (len $taxonomy) 3 }}
+    <url>
+      <loc>{{ printf "/categories/%s/" $name | urlize | absURL }}</loc>
+      <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>{{ if ge (len $taxonomy) 10 }}0.7{{ else if ge (len $taxonomy) 5 }}0.6{{ else }}0.5{{ end }}</priority>
+    </url>
+    {{ end }}
+  {{ end }}
+  
+  <!-- Tags main page -->
+  <url>
+    <loc>{{ "/tags/" | absURL }}</loc>
+    <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- Important tags only (minimum 5 posts) -->
+  {{ range $name, $taxonomy := .Site.Taxonomies.tags }}
+    {{ if ge (len $taxonomy) 5 }}
+    <url>
+      <loc>{{ printf "/tags/%s/" $name | urlize | absURL }}</loc>
+      <lastmod>{{ now.Format "2006-01-02T15:04:05-07:00" }}</lastmod>
+      <changefreq>{{ if ge (len $taxonomy) 20 }}weekly{{ else }}monthly{{ end }}</changefreq>
+      <priority>{{ if ge (len $taxonomy) 20 }}0.6{{ else if ge (len $taxonomy) 10 }}0.5{{ else }}0.4{{ end }}</priority>
+    </url>
+    {{ end }}
+  {{ end }}
+  
+</urlset>

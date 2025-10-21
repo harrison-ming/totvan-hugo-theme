@@ -1,0 +1,18 @@
+{{- /*
+  分页导航组件
+
+  显示上一页/下一页按钮
+
+  使用示例:
+  {{- partial "pagination.html" . -}}
+*/ -}}
+
+<div class="flex items-center mt-10">
+  {{- if .Paginator.HasPrev -}}
+    <a class="border rounded-full px-6 py-2 hover:bg-zinc-200 mr-auto" href="{{ .Paginator.Prev.URL }}">← Previous</a>
+  {{- end -}}
+
+  {{- if .Paginator.HasNext -}}
+    <a class="border rounded-full px-6 py-2 hover:bg-zinc-200" href="{{ .Paginator.Next.URL }}">Next →</a>
+  {{- end -}}
+</div>

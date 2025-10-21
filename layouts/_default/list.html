@@ -1,0 +1,32 @@
+{{ define "main" }}
+
+{{- partial "content/breadcrumb.html" . -}}
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-14">
+
+  <section class="md:col-span-2">
+
+    <div class="space-y-{{ if eq .Kind "section" }}4{{ else }}6{{ end }}">
+
+      {{ range ( .Paginator 20 ).Pages }}
+
+        {{- partial "content/card.html" . -}}
+
+      {{ end }}
+
+    </div>
+
+    <!-- Pagination -->
+    {{- partial "pagination.html" . -}}
+  
+  </section>
+
+  <aside class="md:col-span-1">
+
+    {{- partial "content/aside.html" . -}}
+    
+  </aside>
+
+  </div>
+
+{{ end }} 

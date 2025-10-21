@@ -1,0 +1,31 @@
+{{- /*
+  小卡片组件 - 用于侧边栏最新文章列表
+
+  参数:
+  - . (context): 文章页面对象
+*/ -}}
+<div class="flex gap-3 hover:bg-gray-50 rounded p-2 transition group h-20 mb-2">
+  <!-- 左侧横向矩形缩略图 -->
+  <figure class="flex-shrink-0 w-32 h-20 overflow-hidden rounded">
+    <a href="{{ .Permalink }}" class="block w-full h-full">
+      {{- if .Params.image }}
+        {{- partial "content/optimized-image.html" (dict
+          "src" .Params.image
+          "alt" .Title
+          "class" "w-full h-full object-cover"
+          "loading" "lazy"
+          "priority" false) -}}
+      {{- else }}
+        {{- partial "content/image-placeholder.html" (dict "size" "w-6 h-6") -}}
+      {{- end }}
+    </a>
+  </figure>
+
+  <!-- 右侧内容 -->
+  <div class="flex-1 min-w-0 flex flex-col justify-center h-20">
+    <h4 class="text-sm font-semibold line-clamp-2 group-hover:text-primary-600 transition mb-1">
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+    </h4>
+    <time class="text-xs text-gray-400" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" }}">{{ .Date.Format "January 2, 2006" }}</time>
+  </div>
+</div>

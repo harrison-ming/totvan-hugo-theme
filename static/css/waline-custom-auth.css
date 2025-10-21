@@ -1,0 +1,577 @@
+/**
+ * Waline Custom Authentication Styles
+ * ====================================
+ *
+ * 独立的评论系统认证样式文件
+ * 用于登录页面和注册页面
+ *
+ * @version 1.0.0
+ * @created 2025-10-21
+ * @reusable Yes - 可用于任何使用 Waline 的 Hugo 站点
+ *
+ * 复用说明:
+ * 1. 将此文件复制到新站点的 static/css/ 目录
+ * 2. 在 login.html 和 register.html 中引入: <link rel="stylesheet" href="{{ "css/waline-custom-auth.css" | absURL }}">
+ * 3. 通过 CSS 变量自定义品牌色（见下方 :root 配置）
+ * 4. 如需调整布局，修改 --waline-auth-* 变量即可
+ */
+
+/* ========================================
+   Layout Overrides for Login/Register Pages
+   ======================================== */
+
+/* Override body and main container for login page */
+body:has(.waline-custom-login-container) {
+  padding-top: 0 !important;
+}
+
+main:has(.waline-custom-login-container) {
+  max-width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* ========================================
+   CSS Variables for Brand Inheritance
+   ======================================== */
+
+:root {
+  /* 品牌主题色 - 可通过 Hugo 配置覆盖 */
+  --waline-theme-color: #0ea5e9; /* Sky blue - 可修改为站点品牌色 */
+
+  /* 基础颜色 */
+  --waline-border-color: #e5e7eb;
+  --waline-bg-color: #ffffff;
+  --waline-text-color: #1f2937;
+  --waline-text-light: #6b7280;
+  --waline-error-color: #ef4444;
+  --waline-success-color: #10b981;
+  --waline-hover-bg: #f9fafb;
+
+  /* 阴影效果 */
+  --waline-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --waline-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+  /* 圆角 */
+  --waline-border-radius: 0.5rem;
+  --waline-border-radius-sm: 0.375rem;
+}
+
+/* ========================================
+   Login Container
+   ======================================== */
+
+.waline-custom-login-container {
+  min-height: calc(100vh - 200px);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 2rem 1rem !important;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+/* ========================================
+   Login Card
+   ======================================== */
+
+.waline-custom-login-card {
+  width: 100%;
+  max-width: 28rem;
+  background: var(--waline-bg-color);
+  border-radius: var(--waline-border-radius);
+  box-shadow: var(--waline-shadow-lg);
+  padding: 2.5rem;
+  animation: waline-fade-in 0.3s ease-out;
+}
+
+@keyframes waline-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ========================================
+   Login Header
+   ======================================== */
+
+.waline-login-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.waline-login-logo {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  display: block;
+  object-fit: contain;
+}
+
+.waline-login-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--waline-text-color);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.waline-login-subtitle {
+  font-size: 0.875rem;
+  color: var(--waline-text-light);
+  margin: 0;
+}
+
+/* ========================================
+   Form Styles
+   ======================================== */
+
+.waline-login-form {
+  margin-top: 1.5rem;
+}
+
+.waline-form-group {
+  margin-bottom: 0.75rem;
+}
+
+.waline-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--waline-text-color);
+  margin-bottom: 0.5rem;
+}
+
+.waline-form-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--waline-text-color);
+  background-color: var(--waline-bg-color);
+  border: 1px solid var(--waline-border-color);
+  border-radius: var(--waline-border-radius-sm);
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.waline-form-input:focus {
+  outline: none;
+  border-color: var(--waline-theme-color);
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+}
+
+.waline-form-input::placeholder {
+  color: #9ca3af;
+}
+
+/* ========================================
+   Password Input Wrapper
+   ======================================== */
+
+.waline-password-wrapper {
+  position: relative;
+}
+
+.waline-password-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--waline-text-light);
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.waline-password-toggle:hover {
+  color: var(--waline-theme-color);
+}
+
+.waline-password-toggle svg {
+  stroke-width: 2;
+}
+
+/* ========================================
+   Error Messages
+   ======================================== */
+
+.waline-error-message {
+  display: block;
+  font-size: 0.8125rem;
+  color: var(--waline-error-color);
+  margin-top: 0.375rem;
+  min-height: 1.125rem;
+}
+
+/* ========================================
+   Form Options (Remember Me & Forgot Password)
+   ======================================== */
+
+.waline-form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+.waline-checkbox-label {
+  display: flex;
+  align-items: center;
+  color: var(--waline-text-color);
+  cursor: pointer;
+  user-select: none;
+}
+
+.waline-checkbox {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  accent-color: var(--waline-theme-color);
+}
+
+.waline-forgot-link {
+  color: var(--waline-theme-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.waline-forgot-link:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+/* ========================================
+   Alert Messages
+   ======================================== */
+
+.waline-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--waline-border-radius-sm);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  animation: waline-slide-down 0.3s ease-out;
+}
+
+@keyframes waline-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.waline-alert svg {
+  flex-shrink: 0;
+  stroke-width: 2;
+}
+
+.waline-alert-error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.waline-alert-success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+
+/* ========================================
+   Submit Button
+   ======================================== */
+
+.waline-submit-button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--waline-theme-color);
+  border: none;
+  border-radius: var(--waline-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.waline-submit-button:hover:not(:disabled) {
+  background-color: #0284c7;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.waline-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.waline-submit-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   Loading Spinner
+   ======================================== */
+
+.waline-spinner {
+  animation: waline-spin 1s linear infinite;
+}
+
+@keyframes waline-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   Register Prompt
+   ======================================== */
+
+.waline-register-prompt {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  color: var(--waline-text-light);
+}
+
+.waline-register-prompt a {
+  color: var(--waline-theme-color);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.waline-register-prompt a:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+/* ========================================
+   OAuth Section
+   ======================================== */
+
+.waline-oauth-section {
+  margin-bottom: 1.5rem;
+}
+
+.waline-oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.waline-oauth-button {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--waline-text-color);
+  background-color: var(--waline-bg-color);
+  border: 1px solid var(--waline-border-color);
+  border-radius: var(--waline-border-radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  text-decoration: none;
+}
+
+.waline-oauth-button:hover {
+  background-color: var(--waline-hover-bg);
+  border-color: var(--waline-theme-color);
+  box-shadow: var(--waline-shadow);
+  transform: translateY(-1px);
+}
+
+.waline-oauth-button:active {
+  transform: translateY(0);
+}
+
+.waline-oauth-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* OAuth Button Specific Colors */
+.waline-oauth-button.twitter {
+  color: #1da1f2;
+  border-color: #1da1f2;
+}
+
+.waline-oauth-button.twitter:hover {
+  background-color: #e8f5fe;
+}
+
+.waline-oauth-button.google {
+  color: #4285f4;
+  border-color: #4285f4;
+}
+
+.waline-oauth-button.google:hover {
+  background-color: #e8f0fe;
+}
+
+.waline-oauth-button.github {
+  color: #24292e;
+  border-color: #24292e;
+}
+
+.waline-oauth-button.github:hover {
+  background-color: #f6f8fa;
+}
+
+/* ========================================
+   Divider
+   ======================================== */
+
+.waline-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.waline-divider::before,
+.waline-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--waline-border-color);
+}
+
+.waline-divider span {
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--waline-text-light);
+}
+
+/* ========================================
+   Footer Links
+   ======================================== */
+
+.waline-login-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--waline-border-color);
+  text-align: center;
+}
+
+.waline-login-footer p {
+  font-size: 0.75rem;
+  color: var(--waline-text-light);
+  margin: 0 0 1rem 0;
+  line-height: 1.5;
+}
+
+.waline-login-footer a {
+  color: var(--waline-theme-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.waline-login-footer a:hover {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+.waline-back-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 640px) {
+  .waline-custom-login-container {
+    padding: 1rem;
+  }
+
+  .waline-custom-login-card {
+    padding: 1.5rem;
+  }
+
+  .waline-login-title {
+    font-size: 1.5rem;
+  }
+
+  .waline-login-logo {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ========================================
+   Accessibility: Focus Visible for Keyboard Navigation
+   ======================================== */
+
+.waline-oauth-button:focus-visible,
+.waline-submit-button:focus-visible,
+.waline-form-input:focus-visible,
+.waline-checkbox:focus-visible {
+  outline: 2px solid var(--waline-theme-color);
+  outline-offset: 2px;
+}
+
+/* ========================================
+   Dark Mode Support (Optional)
+   ======================================== */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --waline-bg-color: #1f2937;
+    --waline-text-color: #f9fafb;
+    --waline-text-light: #9ca3af;
+    --waline-border-color: #374151;
+    --waline-hover-bg: #374151;
+  }
+
+  .waline-custom-login-container {
+    background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+  }
+
+  .waline-form-input {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+
+  .waline-oauth-button {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+}

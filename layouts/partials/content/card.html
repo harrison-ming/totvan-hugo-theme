@@ -1,0 +1,33 @@
+<div class="article-card flex flex-row bg-white rounded-lg overflow-hidden transition-all hover:shadow-lg" style="display: flex !important; flex-direction: row !important; height: 135px;">
+	<!-- 左侧图片区域 -->
+	<div class="article-card__image-wrapper flex-shrink-0" style="width: 180px; height: 135px; border-radius: 0.5rem 0 0 0.5rem;">
+		<a href="{{ .Permalink }}" class="block w-full h-full">
+			{{- if .Params.image }}
+				{{- partial "content/optimized-image.html" (dict
+					"src" .Params.image
+					"alt" .Title
+					"class" "article-card__image w-full h-full object-cover"
+					"loading" "lazy"
+					"priority" false) -}}
+			{{- else }}
+				{{- partial "content/image-placeholder.html" (dict "size" "w-16 h-16") -}}
+			{{- end }}
+		</a>
+	</div>
+
+	<!-- 右侧内容区域 -->
+	<div class="article-card__content flex-1 p-4 flex flex-col justify-center" style="height: 135px;">
+		{{- with .Params.categories }}
+			{{- $category := index . 0 }}
+			<p class="article-card__category text-xs text-gray-400 uppercase tracking-wider mb-2">{{ $category }}</p>
+		{{- end }}
+
+		<h3 class="article-card__title text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+			<a href="{{ .Permalink }}" class="hover:text-primary-600 transition">{{ .Title }}</a>
+		</h3>
+
+		<time class="article-card__date text-xs text-gray-400 uppercase tracking-wide" datetime="{{ .Date.Format "2006-01-02T15:04:05-07:00" | safeHTML }}">
+			{{ .Date.Format "January 2, 2006" }}
+		</time>
+	</div>
+</div> 

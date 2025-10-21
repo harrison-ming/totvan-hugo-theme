@@ -1,0 +1,156 @@
+{{ define "main" }}
+{{- partial "content/breadcrumb.html" . -}}
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-14">
+
+  <article class="md:col-span-2 prose lg:prose-lg single-article-content">
+
+    <header class="not-prose">
+
+      <h1 id="title" class="text-4xl font-bold leading-normal mt-2">{{ .Title }}</h1>
+
+      <div id="lead" class="mt-3 mb-4">
+
+        <p class="font-bold">{{ .Params.description }} </p>
+
+      </div>
+      
+      <div id="writer" class="flex items-center space-x-4">
+
+        <ul class="flex items-center space-x-4 flex-nowrap whitespace-nowrap overflow-x-auto text-sm">
+
+          <li class="my-2 text-gray-600">
+            {{- $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" -}}
+            {{- $dateHuman := .Date | time.Format ":date_long" -}}
+            <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+          </li>
+
+          <li class="before:content-['•'] before:mr-2 before:opacity-50 my-2 text-gray-600">
+            {{ .ReadingTime }} min read
+          </li>
+
+        </ul>
+
+      </div>
+      
+    </header>
+
+    <figure id="featureimage" class="rounded-xl aspect-video">
+
+      {{- if .Params.image }}
+        {{- partial "content/optimized-image.html" (dict 
+            "src" .Params.image 
+            "alt" .Title 
+            "class" "rounded-lg w-full h-full object-cover"
+            "loading" "eager"
+            "priority" true) -}}
+      {{- end }}
+
+      {{- if ( isset .Params "caption" ) }}
+        <figcaption class="text-center italic text-xs mt-2">{{ .Params.caption }}</figcaption>
+      {{- end }}
+
+    </figure>
+
+    <div id="content" class="mb-14">
+      <!-- Content -->
+
+      {{- .Content -}}
+
+      <!-- Tags list -->
+
+      {{- partial "terms.html" (dict "taxonomy" "tags" "page" .) -}}
+
+    </div>
+
+    <footer id="content-footer" class="not-prose">
+
+      <!-- 紧凑型分享按钮 (方案C优化: 120px → 40px) -->
+      {{- partial "social/share-buttons-compact.html" . -}}
+
+      <!-- Waline评论区 (方案C优化: 前置,距离文章仅72px) -->
+      {{- partial "comments/waline.html" . -}}
+
+      <!-- Google AdSense 文章内广告 -->
+      {{- if site.Params.adsense.enable -}}
+      <div class="my-8" style="margin-top: 2rem; margin-bottom: 2rem;">
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.Params.adsense.client }}"
+             crossorigin="anonymous"></script>
+        <ins class="adsbygoogle"
+             style="display:block; text-align:center;"
+             data-ad-layout="in-article"
+             data-ad-format="fluid"
+             data-ad-client="{{ site.Params.adsense.client }}"
+             data-ad-slot="{{ site.Params.adsense.article_slot }}"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+      {{- end -}}
+
+      <div id="related-post" class="">
+
+        <h2 class="text-xl md:text-2xl font-bold mb-6 md:mb-8">推荐阅读</h2>
+
+        {{- $related := slice -}}
+
+        <!-- 优先级1: 相同分类的最新文章 -->
+        {{- if .Params.categories -}}
+          {{- range $category := .Params.categories -}}
+            {{- $categoryPages := where $.Site.RegularPages ".Params.categories" "intersect" (slice $category) -}}
+            {{- $categoryPages = where $categoryPages "Permalink" "!=" $.Permalink -}}
+            {{- $related = $related | append ($categoryPages | first 2) -}}
+          {{- end -}}
+        {{- end -}}
+
+        <!-- 优先级2: 相同标签的文章 -->
+        {{- if and (lt (len $related) 4) .Params.tags -}}
+          {{- range $tag := (.Params.tags | first 3) -}}
+            {{- $tagPages := where $.Site.RegularPages ".Params.tags" "intersect" (slice $tag) -}}
+            {{- $tagPages = where $tagPages "Permalink" "!=" $.Permalink -}}
+            {{- range $page := $tagPages | first 2 -}}
+              {{- if not (in $related $page) -}}
+                {{- $related = $related | append $page -}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+
+        <!-- 优先级3: 最新文章 -->
+        {{- if lt (len $related) 4 -}}
+          {{- $recentPages := where .Site.RegularPages "Section" "posts" -}}
+          {{- $recentPages = where $recentPages "Permalink" "!=" .Permalink -}}
+          {{- range $page := $recentPages | first 6 -}}
+            {{- if not (in $related $page) -}}
+              {{- $related = $related | append $page -}}
+              {{- if ge (len $related) 4 -}}{{- break -}}{{- end -}}
+            {{- end -}}
+          {{- end -}}
+        {{- end -}}
+
+        {{- $related = $related | first 4 -}}
+
+        {{- with $related -}}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {{- range . }}
+          {{- partial "content/card.html" . -}}
+          {{- end }}
+        </div>
+        {{- end }}
+
+      </div>
+
+    </footer>
+
+  </article>
+
+  <!-- Aside -->
+  <aside class="md:col-span-1">
+
+    {{- partial "content/aside.html" . -}}
+    
+  </aside>
+
+</div>
+  
+{{ end }} 

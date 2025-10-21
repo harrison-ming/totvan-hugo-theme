@@ -1,0 +1,52 @@
+<!-- 热门标签组件 -->
+<div class="mb-8 p-6 bg-white rounded-2xl shadow-sm border border-gray-100">
+  <h3 class="text-lg font-bold mb-4 text-gray-800 flex items-center">
+    🔥 热门标签
+  </h3>
+  
+  {{- $tags := slice -}}
+  {{- range $name, $taxonomy := .Site.Taxonomies.tags -}}
+    {{- $count := len $taxonomy -}}
+    {{- if ge $count 3 -}}
+      {{- $tags = $tags | append (dict "name" $name "count" $count "weight" $count) -}}
+    {{- end -}}
+  {{- end -}}
+  
+  {{- $tags = sort $tags "count" "desc" -}}
+  {{- $tags = $tags | first 12 -}}
+  
+  {{- if $tags -}}
+  <div class="flex flex-wrap gap-2">
+    {{- range $tag := $tags -}}
+    {{- $size := "text-sm" -}}
+    {{- $bgColor := "bg-gray-100 hover:bg-gray-200 text-gray-700" -}}
+    
+    {{- if ge $tag.count 20 -}}
+      {{- $size = "text-base" -}}
+      {{- $bgColor = "bg-primary-100 hover:bg-primary-200 text-primary-800" -}}
+    {{- else if ge $tag.count 10 -}}
+      {{- $size = "text-sm" -}}
+      {{- $bgColor = "bg-secondary-100 hover:bg-secondary-200 text-secondary-800" -}}
+    {{- else if ge $tag.count 5 -}}
+      {{- $bgColor = "bg-orange-100 hover:bg-orange-200 text-orange-800" -}}
+    {{- end -}}
+
+    <a href="{{ printf "/tags/%s/" $tag.name | urlize | relURL }}"
+       class="inline-flex items-center px-3 py-1 {{ $size }} font-medium rounded-full transition-all duration-200 {{ $bgColor }} hover:scale-105"
+       title="{{ $tag.name }}: {{ $tag.count }} 篇文章">
+      {{ $tag.name }}
+      <span class="ml-1 text-xs opacity-70">({{ $tag.count }})</span>
+    </a>
+    {{- end -}}
+  </div>
+
+  <div class="mt-4 text-center">
+    <a href="{{ "/tags/" | relURL }}"
+       class="text-sm text-primary-600 hover:text-primary-800 hover:underline transition-colors">
+      查看所有标签 →
+    </a>
+  </div>
+  {{- else -}}
+  <p class="text-gray-500 text-sm">暂无热门标签</p>
+  {{- end -}}
+</div>

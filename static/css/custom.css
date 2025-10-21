@@ -1,0 +1,451 @@
+/* 基础样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  color: #333;
+  line-height: 1.6;
+  padding-top: 160px; /* 为固定header留出空间 (100px logo行 + 约60px 导航栏) */
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 容器 */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Astronomy风格的卡片样式 */
+.aspect-video {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 比例 */
+  height: 0;
+  overflow: hidden;
+}
+
+.aspect-video img,
+.aspect-video > div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 文本截断样式 */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 4.5em;
+}
+
+/* 卡片网格布局 */
+.grid {
+  display: grid;
+  width: 100%;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+
+@media (min-width: 768px) {
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.gap-x-6 {
+  column-gap: 1.5rem;
+}
+
+.gap-y-10 {
+  row-gap: 2.5rem;
+}
+
+/* 分类标题样式 */
+.category-section {
+  margin-bottom: 2.5rem;
+}
+
+.category-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-right: auto;
+  color: #2d3748;
+}
+
+/* 查看全部按钮 */
+.view-all-btn {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.view-all-btn:hover {
+  background-color: #ebf8ff;
+  border-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+/* 分隔线 */
+hr {
+  display: none;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+  width: 100%;
+}
+
+/* 统一卡片高度 - 只应用于首页和分类页的纵向卡片 */
+section.mb-16 .grid > div,
+.category-section .grid > div {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 主网格区域的group样式 - 纵向排列 (只针对首页) */
+section.mb-16 .grid .group,
+.category-section .grid .group {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+section.mb-16 .grid .group:hover,
+.category-section .grid .group:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  transform: translateY(-4px);
+}
+
+section.mb-16 .grid a,
+.category-section .grid a {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+section.mb-16 .grid a > div:last-child,
+.category-section .grid a > div:last-child {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 图片缩放效果 - 只应用于主网格区域 */
+.grid .group img {
+  transition: transform 0.5s ease;
+}
+
+.grid .group:hover img {
+  transform: scale(1.05);
+}
+
+/* 确保侧边栏"最新文章"区域的卡片保持横向布局 */
+aside .group {
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+/* 确保分类页面的卡片保持横向布局 */
+.category-card {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+/* 确保文章详情页"推荐阅读"区域的卡片保持横向布局 */
+#related-post .article-card,
+#related-post .grid .article-card {
+  display: flex !important;
+  flex-direction: row !important;
+  height: 160px !important;
+}
+
+#related-post .grid > div {
+  display: block !important;
+  height: auto !important;
+  flex-direction: row !important;
+}
+
+#related-post .grid a {
+  display: flex !important;
+  flex-direction: row !important;
+  height: auto !important;
+}
+
+#related-post .article-card__image-wrapper {
+  width: 192px !important;
+  height: 160px !important;
+  flex-shrink: 0 !important;
+}
+
+#related-post .article-card__content {
+  flex: 1 !important;
+  padding: 1rem !important;
+  height: 160px !important;
+}
+
+/* 强制分类网格显示多列 */
+@media (min-width: 768px) {
+  section > div.grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  section > div.grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Flexbox 工具类 */
+.flex {
+  display: flex;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.mb-8 {
+  margin-bottom: 2rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .category-title {
+    font-size: 1.5rem;
+  }
+
+  .view-all-btn {
+    padding: 0.375rem 1rem;
+    font-size: 0.75rem;
+  }
+
+  .gap-y-10 {
+    row-gap: 1.5rem;
+  }
+}
+
+/* 移动端全局溢出防护 */
+@media (max-width: 768px) {
+  /* 容器约束 */
+  .container,
+  main,
+  article,
+  aside,
+  section {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Grid 系统移动端修复 */
+  .grid {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 文章内容区域 */
+  .single-article-content {
+    max-width: 100%;
+    overflow-x: hidden;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Prose 内容约束 */
+  .prose,
+  .prose * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .prose p,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose h5,
+  .prose h6,
+  .prose li,
+  .prose blockquote {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  /* 图片和媒体元素 */
+  .prose img,
+  .prose figure,
+  .prose video,
+  .prose iframe {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+  }
+
+  /* 侧边栏约束 */
+  aside > div,
+  aside .space-y-6 > * {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* 小红书轮播图片 */
+  .redbook-carousel-wrapper,
+  .redbook-carousel-item,
+  .redbook-carousel-item img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+  }
+
+  /* 移除小红书图片容器的背景和边框 */
+  .redbook-carousel-wrapper {
+    background: transparent;
+  }
+
+  .redbook-carousel-item {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+
+  .redbook-carousel-item a {
+    display: block;
+    line-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .redbook-carousel-item img {
+    display: block;
+    border: none !important;
+    margin: 0;
+    padding: 0;
+    box-shadow: none !important;
+  }
+
+  /* 卡片组件 */
+  .group,
+  .article-card {
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  /* 表格横向滚动 */
+  .prose table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 代码块横向滚动 */
+  .prose pre {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 长文本强制换行 */
+  .prose code:not(pre code) {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+  }
+
+  /* 链接换行 */
+  .prose a {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+}
+
+/* insert-link 样式 - 让整个卡片可点击 */
+.insert-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* 标题样式 */
+.section-title {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+  font-weight: 700;
+}
+
+@media (min-width: 768px) {
+  .section-title {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+  }
+}
+
+/* 卡片图片过渡动画 */
+.group:hover img {
+  transform: scale(1.05);
+  transition: transform 0.5s ease;
+}
+
+/* 临时隐藏订阅通讯模块 */
+.layouts-partials-content-newsletter {
+  display: none;
+}
+
+/* ========================================
+   Waline Custom Authentication Styles
+   ======================================== */
+
+/*
+ * Note: Waline authentication styles have been moved to a separate file
+ * for better modularity and reusability across Hugo sites.
+ *
+ * File: /static/css/waline-custom-auth.css
+ * Usage: Automatically loaded in login.html and register.html
+ *
+ * If you need to customize Waline auth styles, edit waline-custom-auth.css
+ * instead of this file.
+ */

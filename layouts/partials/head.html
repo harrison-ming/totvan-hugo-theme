@@ -1,0 +1,195 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Dynamic title for SEO -->
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+
+<!-- Dynamic description for SEO -->
+{{ $description := "" }}
+{{ if .IsHome }}
+  {{ $description = .Site.Params.description }}
+{{ else if .Params.description }}
+  {{ $description = .Params.description }}
+{{ else if .Summary }}
+  {{ $description = .Summary | truncate 160 }}
+{{ else }}
+  {{ $description = .Site.Params.description }}
+{{ end }}
+<meta name="description" content="{{ $description }}">
+
+<!-- Canonical URL -->
+<link rel="canonical" href="{{ .Permalink }}">
+
+<!-- DNS预连接 - 提前建立连接到重要的外部域名 -->
+<link rel="preconnect" href="https://imagedelivery.net" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="dns-prefetch" href="//imagedelivery.net">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+
+<!-- 关键资源预加载 -->
+{{- if .IsHome -}}
+  <!-- 首页关键资源预加载 -->
+  {{- $mainCSS := resources.Get "css/main.css" -}}
+  {{- $customCSS := resources.Get "css/custom.css" -}}
+  {{- if and $mainCSS $customCSS -}}
+    {{- $styles := slice $mainCSS $customCSS -}}
+    {{- $bundledCSS := $styles | resources.Concat "css/bundle.css" -}}
+    {{- if ne hugo.Environment "development" -}}
+      {{- $bundledCSS = $bundledCSS | minify | fingerprint -}}
+    {{- end -}}
+    <link rel="preload" href="{{ $bundledCSS.RelPermalink }}" as="style">
+  {{- end -}}
+{{- else if eq .Type "posts" -}}
+  <!-- 文章页面预加载特色图片 -->
+  {{- if .Params.image -}}
+    {{- if hasPrefix .Params.image "http" -}}
+      <link rel="preload" href="{{ .Params.image }}" as="image" crossorigin>
+    {{- else -}}
+      {{- with resources.Get .Params.image -}}
+        {{- $optimized := . -}}
+        {{- if ge .Width 800 -}}
+          {{- $optimized = .Resize "800x" -}}
+        {{- end -}}
+        <link rel="preload" href="{{ $optimized.RelPermalink }}" as="image">
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+<!-- 字体预加载(如果使用自定义字体) -->
+<!-- <link rel="preload" href="/fonts/custom-font.woff2" as="font" type="font/woff2" crossorigin> -->
+
+<!-- Open Graph Tags -->
+<meta property="og:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ $description }}">
+<meta property="og:type" content="{{ if .IsHome }}website{{ else if eq .Type "posts" }}article{{ else }}website{{ end }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:locale" content="{{ .Site.Language.Lang | default "zh_CN" }}">
+
+{{ if .Params.image }}
+  {{ if hasPrefix .Params.image "http" }}
+    <meta property="og:image" content="{{ .Params.image }}">
+  {{ else }}
+    {{ with resources.Get .Params.image }}
+      <meta property="og:image" content="{{ .Permalink }}">
+      <meta property="og:image:width" content="{{ .Width }}">
+      <meta property="og:image:height" content="{{ .Height }}">
+    {{ end }}
+  {{ end }}
+{{ else }}
+  <meta property="og:image" content="{{ "/images/logo.svg" | absURL }}">
+{{ end }}
+
+{{ if and (eq .Type "posts") (not .IsHome) }}
+  <meta property="article:published_time" content="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:modified_time" content="{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}">
+  <meta property="article:author" content="{{ .Site.Params.Author.name }}">
+  {{ range .Params.categories }}
+    <meta property="article:section" content="{{ . }}">
+  {{ end }}
+  {{ range .Params.tags }}
+    <meta property="article:tag" content="{{ . }}">
+  {{ end }}
+{{ end }}
+
+<!-- Twitter Cards -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta name="twitter:description" content="{{ $description }}">
+{{ if .Params.image }}
+  {{ if hasPrefix .Params.image "http" }}
+    <meta name="twitter:image" content="{{ .Params.image }}">
+  {{ else }}
+    {{ with resources.Get .Params.image }}
+      <meta name="twitter:image" content="{{ .Permalink }}">
+    {{ end }}
+  {{ end }}
+{{ else }}
+  <meta name="twitter:image" content="{{ "/images/logo.svg" | absURL }}">
+{{ end }}
+{{ if .Site.Params.Author.twitter }}
+<meta name="twitter:site" content="@{{ .Site.Params.Author.twitter }}">
+<meta name="twitter:creator" content="@{{ .Site.Params.Author.twitter }}">
+{{ end }}
+
+<!-- Additional SEO Meta Tags -->
+<meta name="robots" content="index, follow">
+<meta name="googlebot" content="index, follow">
+<meta name="author" content="{{ .Site.Params.Author.name }}">
+{{ if .Params.tags }}
+<meta name="keywords" content="{{ delimit .Params.tags ", " }}">
+{{ end }}
+
+<!-- Language and Regional -->
+<meta name="language" content="{{ .Site.Language.Lang | default "zh-CN" }}">
+<link rel="alternate" hreflang="{{ .Site.Language.Lang | default "zh-CN" }}" href="{{ .Permalink }}">
+
+<!-- Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "{{ if .IsHome }}WebSite{{ else if eq .Type "posts" }}Article{{ else }}WebPage{{ end }}",
+  "name": "{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}",
+  "headline": "{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ .Title }}{{ end }}",
+  "description": "{{ $description }}",
+  "url": "{{ .Permalink }}",
+  {{ if .IsHome }}
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "{{ .Site.BaseURL }}search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  },
+  {{ end }}
+  {{ if and (eq .Type "posts") (not .IsHome) }}
+  "datePublished": "{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}",
+  "dateModified": "{{ .Lastmod.Format "2006-01-02T15:04:05Z07:00" }}",
+  "wordCount": {{ .WordCount }},
+  "author": {
+    "@type": "Person",
+    "name": "{{ .Site.Params.Author.name }}"
+  },
+  {{ if .Params.image }}
+  "image": {
+    "@type": "ImageObject",
+    "url": "{{ if hasPrefix .Params.image "http" }}{{ .Params.image }}{{ else }}{{ with resources.Get .Params.image }}{{ .Permalink }}{{ end }}{{ end }}",
+    "caption": "{{ .Title }}"
+  },
+  {{ end }}
+  {{ end }}
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{ .Site.Title }}",
+    "url": "{{ .Site.BaseURL }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ "/images/logo.svg" | absURL }}"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ .Permalink }}"
+  }
+}
+</script>
+
+<!-- Google Analytics (only loaded if configured) -->
+{{- with site.Params.analytics.google -}}
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ . }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', '{{ . }}');
+</script>
+{{- end -}}
+
+<!-- Google AdSense -->
+{{- if site.Params.adsense.enable -}}
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.Params.adsense.client }}"
+     crossorigin="anonymous"></script>
+{{- end -}}
+
+{{- partialCached "head/css.html" . -}}
+{{- partial "head/favicon.html" . -}} 

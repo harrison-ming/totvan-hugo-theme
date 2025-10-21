@@ -1,0 +1,260 @@
+<!-- Waline评论系统 -->
+{{- if ne .Params.comments false -}}
+<div id="waline-comments" class="my-8">
+  <h2 class="text-2xl font-bold mb-6">💬 评论区</h2>
+  <div id="waline"></div>
+</div>
+
+<!-- Waline CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@waline/client@v3/dist/waline.css"
+/>
+
+<!-- Waline 品牌主题样式覆盖 - 海洋蓝配色 -->
+<style>
+#waline-comments {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+#waline {
+  max-width: 100%;
+  overflow: hidden;
+
+  /* 品牌主色 - 海洋蓝 */
+  --waline-theme-color: #06b6d4;
+  --waline-active-color: #0891b2;
+
+  /* 背景色 */
+  --waline-bgcolor-light: #f9fafb;
+
+  /* 文字颜色 */
+  --waline-color: #374151;
+  --waline-color-light: #6b7280;
+
+  /* 边框 */
+  --waline-border-color: #e5e7eb;
+  --waline-border: 1px solid #e5e7eb;
+
+  /* 圆角 - 与卡片一致 */
+  --waline-border-radius: 0.75rem;
+
+  /* 阴影 */
+  --waline-box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+
+  /* 字体 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 移动端 Waline 评论区约束 */
+@media (max-width: 768px) {
+  #waline-comments,
+  #waline,
+  #waline * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  #waline .wl-editor,
+  #waline .wl-input,
+  #waline .wl-comment,
+  #waline .wl-panel,
+  #waline img {
+    max-width: 100% !important;
+  }
+
+  /* 防止评论内容溢出 */
+  #waline .wl-content {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+}
+
+/* 提交按钮 - 使用品牌色 */
+#waline .wl-btn {
+  background: #06b6d4 !important;
+  color: white !important;
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+}
+
+#waline .wl-btn:hover {
+  background: #0891b2 !important;
+  transform: translateY(-1px);
+}
+
+/* 输入框聚焦 */
+#waline .wl-input:focus,
+#waline .wl-editor:focus {
+  border-color: #06b6d4 !important;
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1) !important;
+}
+
+/* 链接颜色 */
+#waline a {
+  color: #06b6d4 !important;
+}
+
+#waline a:hover {
+  color: #0891b2 !important;
+}
+</style>
+
+<!-- Waline JS -->
+<script type="module">
+  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+
+  init({
+    el: '#waline',
+    // 使用自定义域名 - 登录页面: https://comments.totvan.com/ui/login
+    serverURL: 'https://comments.totvan.com',
+
+    path: window.location.pathname,
+    lang: 'zh-CN',
+
+    locale: {
+      placeholder: '欢迎留言讨论，支持Markdown语法...',
+      sofa: '快来发表第一条评论吧~',
+      submit: '提交',
+      reply: '回复',
+      cancelReply: '取消回复',
+      comment: '评论',
+      refresh: '刷新',
+      more: '加载更多...',
+      preview: '预览',
+      emoji: '表情',
+      uploadImage: '上传图片',
+      nick: '昵称',
+      mail: '邮箱',
+      link: '网址',
+      login: '登录',
+      logout: '退出',
+      admin: '管理员',
+      word: '字',
+      seconds: '秒前',
+      minutes: '分钟前',
+      hours: '小时前',
+      days: '天前',
+      now: '刚刚',
+    },
+
+    // 评论者信息
+    requiredMeta: ['nick'],
+    meta: ['nick', 'mail', 'link'],
+
+    // 表情包配置
+    emoji: [
+      'https://unpkg.com/@waline/emojis@1.2.0/weibo',
+      'https://unpkg.com/@waline/emojis@1.2.0/alus',
+      'https://unpkg.com/@waline/emojis@1.2.0/bilibili',
+    ],
+
+    // 图片上传配置
+    imageUploader: async (file) => {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('https://totvan-image-upload.shield-densest0p.workers.dev', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+
+        if (data.url) {
+          return data.url;
+        } else if (data.error) {
+          throw new Error(data.error);
+        } else {
+          throw new Error('Upload failed');
+        }
+      } catch (error) {
+        console.error('图片上传错误:', error);
+        alert('图片上传失败: ' + error.message);
+        throw error;
+      }
+    },
+
+    // 登录配置 - 指向自定义登录页面
+    {{ if .Site.Params.waline.customLogin.enabled }}
+    login: '{{ .Site.Params.waline.customLogin.path | default "/login" }}',
+    {{ else }}
+    login: 'enable',
+    {{ end }}
+
+    // 其他配置
+    avatar: 'mp',
+    avatarCDN: 'https://sdn.geekzu.org/avatar/',
+    avatarForce: false,
+    copyright: true,
+    dark: 'auto',
+    highlighter: false,
+
+    // 评论统计
+    pageview: false,
+    comment: true,
+  });
+
+  {{ if .Site.Params.waline.customLogin.enabled }}
+  // 拦截 Waline 登录按钮点击,跳转到自定义登录页面
+  setTimeout(() => {
+    const attachLoginHandler = () => {
+      // 查找登录按钮 - 使用更精确的选择器
+      const loginButtons = document.querySelectorAll('.wl-info .wl-btn:not(.primary)');
+
+      loginButtons.forEach(button => {
+        // 检查按钮文本是否为"登录"
+        if (button.textContent.trim() === '登录' && !button.dataset.customLoginBound) {
+          button.dataset.customLoginBound = 'true';
+
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            // 保存当前页面URL用于登录后跳转
+            const currentURL = window.location.pathname;
+            sessionStorage.setItem('WALINE_COMMENT_RETURN_URL', currentURL);
+
+            // 跳转到自定义登录页面
+            window.location.href = '{{ .Site.Params.waline.customLogin.path | default "/login" }}?redirect=' + encodeURIComponent(currentURL);
+
+            return false;
+          }, true);
+
+          console.log('✅ Custom login handler attached to Waline login button');
+        }
+      });
+    };
+
+    // 使用 MutationObserver 监听 DOM 变化
+    const observer = new MutationObserver(() => {
+      attachLoginHandler();
+    });
+
+    // 开始观察 Waline 容器
+    const walineContainer = document.querySelector('#waline');
+    if (walineContainer) {
+      observer.observe(walineContainer, {
+        childList: true,
+        subtree: true
+      });
+
+      // 立即尝试查找一次
+      attachLoginHandler();
+
+      // 延迟再次尝试(确保 Waline 完全渲染)
+      setTimeout(attachLoginHandler, 500);
+      setTimeout(attachLoginHandler, 1500);
+    }
+  }, 500);
+  {{ end }}
+</script>
+{{- end -}}

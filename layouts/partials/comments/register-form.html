@@ -1,0 +1,154 @@
+<form id="waline-email-register-form" class="waline-login-form">
+  <!-- Display Name Input -->
+  <div class="waline-form-group">
+    <label for="waline-register-name" class="waline-form-label">
+      昵称
+    </label>
+    <input
+      type="text"
+      id="waline-register-name"
+      name="name"
+      class="waline-form-input"
+      placeholder="请输入您的昵称"
+      required
+      autocomplete="name"
+      aria-required="true"
+      aria-describedby="name-error"
+    >
+    <span id="name-error" class="waline-error-message" role="alert"></span>
+  </div>
+
+  <!-- Email Input -->
+  <div class="waline-form-group">
+    <label for="waline-register-email" class="waline-form-label">
+      邮箱地址
+    </label>
+    <input
+      type="email"
+      id="waline-register-email"
+      name="email"
+      class="waline-form-input"
+      placeholder="your@email.com"
+      required
+      autocomplete="email"
+      aria-required="true"
+      aria-describedby="email-error"
+    >
+    <span id="email-error" class="waline-error-message" role="alert"></span>
+  </div>
+
+  <!-- Password Input -->
+  <div class="waline-form-group">
+    <label for="waline-register-password" class="waline-form-label">
+      密码
+    </label>
+    <div class="waline-password-wrapper">
+      <input
+        type="password"
+        id="waline-register-password"
+        name="password"
+        class="waline-form-input"
+        placeholder="至少6位密码"
+        required
+        autocomplete="new-password"
+        aria-required="true"
+        aria-describedby="password-error"
+      >
+      <button
+        type="button"
+        class="waline-password-toggle"
+        aria-label="显示密码"
+        tabindex="-1"
+      >
+        <svg class="waline-icon-hide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <svg class="waline-icon-show" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display:none;">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      </button>
+    </div>
+    <span id="password-error" class="waline-error-message" role="alert"></span>
+  </div>
+
+  <!-- Confirm Password Input -->
+  <div class="waline-form-group">
+    <label for="waline-register-password-confirm" class="waline-form-label">
+      确认密码
+    </label>
+    <div class="waline-password-wrapper">
+      <input
+        type="password"
+        id="waline-register-password-confirm"
+        name="password_confirm"
+        class="waline-form-input"
+        placeholder="再次输入密码"
+        required
+        autocomplete="new-password"
+        aria-required="true"
+        aria-describedby="password-confirm-error"
+      >
+      <button
+        type="button"
+        class="waline-password-toggle"
+        data-target="waline-register-password-confirm"
+        aria-label="显示密码"
+        tabindex="-1"
+      >
+        <svg class="waline-icon-hide" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
+        <svg class="waline-icon-show" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" style="display:none;">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+      </button>
+    </div>
+    <span id="password-confirm-error" class="waline-error-message" role="alert"></span>
+  </div>
+
+  <!-- Error Message Display -->
+  <div id="waline-register-error" class="waline-alert waline-alert-error" role="alert" style="display:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="8" x2="12" y2="12"></line>
+      <line x1="12" y1="16" x2="12.01" y2="16"></line>
+    </svg>
+    <span id="waline-register-error-text"></span>
+  </div>
+
+  <!-- Success Message Display -->
+  <div id="waline-register-success" class="waline-alert waline-alert-success" role="alert" style="display:none;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+    <span>注册成功! 正在跳转到登录页面...</span>
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="waline-submit-button"
+    id="waline-register-submit"
+  >
+    <span class="waline-button-text">注册</span>
+    <span class="waline-button-loading" style="display:none;">
+      <svg class="waline-spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <circle cx="12" cy="12" r="10" stroke-width="3" stroke-dasharray="31.4 31.4"></circle>
+      </svg>
+      注册中...
+    </span>
+  </button>
+
+  <!-- Login Link -->
+  <p class="waline-register-prompt">
+    已有账号?
+    <a href="{{ .Site.Params.waline.customLogin.path | default "/login" }}">
+      立即登录
+    </a>
+  </p>
+</form>

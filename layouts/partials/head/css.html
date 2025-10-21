@@ -1,0 +1,75 @@
+{{- $mainCSS := resources.Get "css/main.css" -}}
+{{- $customCSS := resources.Get "css/custom.css" -}}
+{{- $walineCSS := resources.Get "css/waline-theme.css" -}}
+
+{{- if and $mainCSS $customCSS -}}
+  {{- $styles := slice $mainCSS $customCSS -}}
+  {{- if $walineCSS -}}
+    {{- $styles = $styles | append $walineCSS -}}
+  {{- end -}}
+  {{- $bundledCSS := $styles | resources.Concat "css/bundle.css" -}}
+  
+  {{- if eq hugo.Environment "development" -}}
+    <link rel="stylesheet" href="{{ $bundledCSS.RelPermalink }}">
+  {{- else -}}
+    {{- $optimizedCSS := $bundledCSS | minify | fingerprint -}}
+    <link rel="stylesheet" href="{{ $optimizedCSS.RelPermalink }}" integrity="{{ $optimizedCSS.Data.Integrity }}" crossorigin="anonymous">
+  {{- end -}}
+{{- else -}}
+  <!-- Fallback: 分别加载CSS文件 -->
+  {{- with $mainCSS -}}
+    {{- if eq hugo.Environment "development" -}}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{- else -}}
+      {{- with . | minify | fingerprint -}}
+        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+  
+  {{- with $customCSS -}}
+    {{- if eq hugo.Environment "development" -}}
+      <link rel="stylesheet" href="{{ .RelPermalink }}">
+    {{- else -}}
+      {{- with . | minify | fingerprint -}}
+        <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+      {{- end -}}
+    {{- end -}}
+  {{- else -}}
+    <!-- Static fallback -->
+    <link rel="stylesheet" href="{{ "css/custom.css" | relURL }}">
+  {{- end -}}
+{{- end -}}
+
+<!-- 关键CSS - 内联以避免阻塞渲染 -->
+<style>
+  /* 关键样式 - 首屏可见内容 */
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+  }
+  
+  /* 防止布局偏移的占位符 */
+  .aspect-video {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* 提升图片加载体验 */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* 防止闪烁 */
+  .lazyload {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .lazyloaded {
+    opacity: 1;
+  }
+</style> 
