@@ -1,0 +1,32 @@
+{{- /*
+  获取文章的主分类
+
+  参数:
+    . (dict) - 参数字典
+      page (Page) - 页面对象 (required)
+      index (int, optional) - 分类索引,默认为0(第一个分类)
+
+  返回:
+    string - 分类名称,如果没有则返回空字符串
+
+  用法示例:
+    {{ $category := partial "functions/get-primary-category" (dict "page" .) }}
+    {{ if $category }}
+      <span class="category">{{ $category }}</span>
+    {{ end }}
+
+    获取第二个分类:
+    {{ $secondCategory := partial "functions/get-primary-category" (dict "page" . "index" 1) }}
+*/ -}}
+
+{{- $page := .page -}}
+{{- $index := .index | default 0 -}}
+{{- $category := "" -}}
+
+{{- with $page.Params.categories -}}
+  {{- if ge (len .) (add $index 1) -}}
+    {{- $category = index . $index -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $category -}}

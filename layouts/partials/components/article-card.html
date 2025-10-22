@@ -1,0 +1,128 @@
+{{- /*
+  统一的文章卡片组件
+
+  参数:
+    . (dict) - 参数字典
+      page (Page) - 文章页面对象 (required)
+      variant (string) - 卡片样式变体:
+        - "horizontal" (默认) - 横向卡片(图片在左)
+        - "vertical" - 纵向卡片(图片在上)
+        - "minimal" - 极简卡片(仅文字)
+      showImage (bool) - 是否显示图片,默认true
+      showCategory (bool) - 是否显示分类,默认true
+      showDate (bool) - 是否显示日期,默认true
+      showExcerpt (bool) - 是否显示摘要,默认false
+      imageClass (string) - 图片额外的CSS类
+      cardClass (string) - 卡片额外的CSS类
+
+  用法示例:
+    {{- partial "components/article-card" (dict "page" . "variant" "vertical") -}}
+
+    {{- partial "components/article-card" (dict
+      "page" .
+      "variant" "horizontal"
+      "showExcerpt" true
+      "cardClass" "my-custom-class") -}}
+*/ -}}
+
+{{- $page := .page -}}
+{{- $variant := .variant | default "horizontal" -}}
+{{- $showImage := .showImage | default true -}}
+{{- $showCategory := .showCategory | default true -}}
+{{- $showDate := .showDate | default true -}}
+{{- $showExcerpt := .showExcerpt | default false -}}
+{{- $imageClass := .imageClass | default "" -}}
+{{- $cardClass := .cardClass | default "" -}}
+
+{{- /* 获取数据 */ -}}
+{{- $imageUrl := partial "functions/get-image-url" (dict "page" $page) -}}
+{{- $category := partial "functions/get-primary-category" (dict "page" $page) -}}
+{{- $dateFormatted := partial "functions/format-date" (dict "date" $page.Date "format" "long") -}}
+{{- $dateISO := partial "functions/format-date" (dict "date" $page.Date "format" "datetime") -}}
+
+{{- if eq $variant "vertical" -}}
+  {{- /* 纵向卡片 */ -}}
+  <div class="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden {{ $cardClass }}">
+    <a href="{{ $page.RelPermalink }}" class="block">
+      {{- if and $showImage $imageUrl -}}
+      <div class="aspect-video overflow-hidden" style="border-radius: 0.5rem 0.5rem 0 0;">
+        {{- partial "content/optimized-image.html" (dict
+          "src" $imageUrl
+          "alt" $page.Title
+          "class" (printf "w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 %s" $imageClass)
+          "loading" "lazy"
+          "priority" false) -}}
+      </div>
+      {{- end -}}
+
+      <div class="p-6 bg-white">
+        {{- if and $showCategory $category -}}
+        <p class="text-xs text-primary-600 font-semibold uppercase tracking-wider mb-2">{{ $category }}</p>
+        {{- end -}}
+
+        <h3 class="text-lg md:text-xl font-bold text-gray-900 mb-4 line-clamp-2 leading-snug group-hover:text-primary-600 transition-colors">
+          {{ $page.Title }}
+        </h3>
+
+        {{- if and $showExcerpt $page.Description -}}
+        <p class="text-gray-600 mb-3 line-clamp-2">{{ $page.Description }}</p>
+        {{- end -}}
+
+        {{- if $showDate -}}
+        <time class="text-sm text-gray-500" datetime="{{ $dateISO }}">{{ $dateFormatted }}</time>
+        {{- end -}}
+      </div>
+    </a>
+  </div>
+
+{{- else if eq $variant "minimal" -}}
+  {{- /* 极简卡片 */ -}}
+  <article class="group border-b border-gray-200 pb-6 mb-6 last:border-b-0 {{ $cardClass }}">
+    {{- if $showDate -}}
+    <time class="block text-sm text-gray-500 mb-2" datetime="{{ $dateISO }}">{{ $dateFormatted }}</time>
+    {{- end -}}
+
+    <h3 class="text-xl font-bold text-gray-900 mb-2 leading-snug">
+      <a href="{{ $page.RelPermalink }}" class="hover:text-primary-600 transition-colors">{{ $page.Title }}</a>
+    </h3>
+
+    {{- if and $showCategory $category -}}
+    <span class="text-xs px-2 py-1 bg-gray-100 text-gray-700 rounded">{{ $category }}</span>
+    {{- end -}}
+
+    {{- if and $showExcerpt $page.Description -}}
+    <p class="text-gray-600 mt-3 line-clamp-2">{{ $page.Description }}</p>
+    {{- end -}}
+  </article>
+
+{{- else -}}
+  {{- /* 横向卡片 (默认) */ -}}
+  <div class="article-card flex flex-row bg-white rounded-lg overflow-hidden transition-all hover:shadow-lg {{ $cardClass }}" style="display: flex !important; flex-direction: row !important; height: 135px;">
+    {{- if and $showImage $imageUrl -}}
+    <div class="article-card__image-wrapper flex-shrink-0" style="width: 180px; height: 135px; border-radius: 0.5rem 0 0 0.5rem;">
+      <a href="{{ $page.RelPermalink }}" class="block w-full h-full">
+        {{- partial "content/optimized-image.html" (dict
+          "src" $imageUrl
+          "alt" $page.Title
+          "class" (printf "article-card__image w-full h-full object-cover %s" $imageClass)
+          "loading" "lazy"
+          "priority" false) -}}
+      </a>
+    </div>
+    {{- end -}}
+
+    <div class="article-card__content flex-1 p-4 flex flex-col justify-center" style="height: 135px;">
+      {{- if and $showCategory $category -}}
+      <p class="article-card__category text-xs text-gray-400 uppercase tracking-wider mb-2">{{ $category }}</p>
+      {{- end -}}
+
+      <h3 class="article-card__title text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+        <a href="{{ $page.RelPermalink }}" class="hover:text-primary-600 transition">{{ $page.Title }}</a>
+      </h3>
+
+      {{- if $showDate -}}
+      <time class="article-card__date text-xs text-gray-400 uppercase tracking-wide" datetime="{{ $dateISO }}">{{ $dateFormatted }}</time>
+      {{- end -}}
+    </div>
+  </div>
+{{- end -}}

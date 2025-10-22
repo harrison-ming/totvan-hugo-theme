@@ -1,0 +1,42 @@
+{{- /*
+  获取文章或页面的图片URL
+
+  参数:
+    . (dict) - 参数字典
+      page (Page) - 页面对象 (required)
+      fallback (string, optional) - 备用图片URL
+
+  返回:
+    string - 图片URL,如果没有则返回空字符串或备用URL
+
+  优先级:
+    1. page.Params.image (文章front matter中的image)
+    2. page.Params.featured_image
+    3. fallback参数
+    4. 空字符串
+
+  用法示例:
+    {{ $imgUrl := partial "functions/get-image-url" (dict "page" . "fallback" "/images/default.jpg") }}
+    {{ if $imgUrl }}
+      <img src="{{ $imgUrl }}" alt="{{ .Title }}">
+    {{ end }}
+*/ -}}
+
+{{- $page := .page -}}
+{{- $fallback := .fallback | default "" -}}
+{{- $imageUrl := "" -}}
+
+{{- /* 优先级1: page.Params.image */ -}}
+{{- with $page.Params.image -}}
+  {{- $imageUrl = . -}}
+{{- else -}}
+  {{- /* 优先级2: page.Params.featured_image */ -}}
+  {{- with $page.Params.featured_image -}}
+    {{- $imageUrl = . -}}
+  {{- else -}}
+    {{- /* 优先级3: fallback */ -}}
+    {{- $imageUrl = $fallback -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $imageUrl -}}

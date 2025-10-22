@@ -1,0 +1,42 @@
+{{- /*
+  格式化日期的通用函数
+
+  参数:
+    . (dict) - 参数字典
+      date (time.Time) - 日期对象 (required)
+      format (string, optional) - 格式类型，可选值:
+        - "long" (默认): January 2, 2006
+        - "short": Jan 2
+        - "iso": 2006-01-02
+        - "datetime": 2006-01-02T15:04:05-07:00
+        - custom: 任何Go时间格式字符串
+
+  返回:
+    string - 格式化后的日期字符串
+
+  用法示例:
+    {{ $formattedDate := partial "functions/format-date" (dict "date" .Date "format" "long") }}
+    <time>{{ $formattedDate }}</time>
+
+    或者直接使用自定义格式:
+    {{ $customDate := partial "functions/format-date" (dict "date" .Date "format" "2006年01月02日") }}
+*/ -}}
+
+{{- $date := .date -}}
+{{- $format := .format | default "long" -}}
+{{- $result := "" -}}
+
+{{- if eq $format "long" -}}
+  {{- $result = $date.Format "January 2, 2006" -}}
+{{- else if eq $format "short" -}}
+  {{- $result = $date.Format "Jan 2" -}}
+{{- else if eq $format "iso" -}}
+  {{- $result = $date.Format "2006-01-02" -}}
+{{- else if eq $format "datetime" -}}
+  {{- $result = $date.Format "2006-01-02T15:04:05-07:00" -}}
+{{- else -}}
+  {{- /* 自定义格式 */ -}}
+  {{- $result = $date.Format $format -}}
+{{- end -}}
+
+{{- return $result -}}
