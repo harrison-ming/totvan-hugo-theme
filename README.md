@@ -1,193 +1,411 @@
-# ToTVan Theme
+# ToTVan Hugo Theme
 
-一个现代化的 Hugo 资讯门户主题，专为温哥华生活资讯网站设计。
+一个现代化、模块化的 Hugo 主题,专为内容站点和资讯门户设计。
 
-## 特性
+[![GitHub release](https://img.shields.io/github/v/release/harrison-ming/totvan-hugo-theme)](https://github.com/harrison-ming/totvan-hugo-theme/releases)
+[![Hugo Version](https://img.shields.io/badge/Hugo-%3E%3D0.145.0-blue)](https://gohugo.io/)
+[![License](https://img.shields.io/github/license/harrison-ming/totvan-hugo-theme)](LICENSE)
 
-- 📱 **响应式设计** - 完美适配桌面和移动设备
-- 🎨 **Tailwind CSS** - 现代化的样式框架
-- 🖼️ **图片优化** - 懒加载和自动优化
-- 📊 **SEO 优化** - 结构化数据和 meta 标签
-- 💰 **AdSense 集成** - 内置广告位支持
-- 💬 **Waline 评论系统** - 完整的评论功能（需单独部署后端）
-- 🔄 **组件化设计** - 可复用的模板组件
+## ✨ 特性
 
-## 快速开始
+### 核心功能
 
-### 安装
+- 📱 **完全响应式** - 完美适配桌面、平板和移动设备
+- 🎨 **Tailwind CSS** - 现代化的样式框架,易于自定义
+- 🖼️ **智能图片处理** - 懒加载、自动优化、CDN 支持
+- 🚀 **性能优化** - DNS 预连接、资源预加载、极速构建
+- ♿ **无障碍访问** - 遵循 WCAG 标准
 
-1. 克隆主题到你的 Hugo 项目：
+### SEO 和营销
+
+- 📊 **完整 SEO 支持** - Open Graph、Twitter Cards、JSON-LD
+- 🔍 **搜索引擎优化** - 结构化数据、规范化 URL、sitemap
+- 📈 **Google Analytics 4** - 内置分析集成
+- 💰 **AdSense 集成** - 开箱即用的广告支持
+
+### 灵活性和可扩展性
+
+- 🏠 **4 种首页布局** - Category Grid、Magazine、Minimal、Hero-Featured
+- 🧩 **组件化架构** - 可复用的模板组件和函数
+- 🎯 **高度可配置** - 丰富的配置选项,零代码定制
+- 💬 **Waline 评论系统** - 完整的评论功能支持
+
+## 🚀 快速开始
+
+### 方式 1: Hugo 模块 (推荐)
+
+在你的 Hugo 站点配置中:
+
+```toml
+# hugo.toml
+[module]
+  [[module.imports]]
+    path = "github.com/harrison-ming/totvan-hugo-theme"
+```
+
+然后运行:
+
+```bash
+hugo mod get -u
+hugo mod tidy
+```
+
+### 方式 2: Git Submodule
 
 ```bash
 cd your-hugo-site
-git clone https://github.com/harrison-ming/totvan-theme.git themes/totvan-theme
+git submodule add https://github.com/harrison-ming/totvan-hugo-theme.git themes/totvan
 ```
 
-2. 在 `hugo.toml` 中配置主题：
+在 `hugo.toml` 中:
 
 ```toml
-theme = 'totvan-theme'
+theme = 'totvan'
 ```
 
-### 配置
+### 方式 3: 直接克隆
 
-在 `hugo.toml` 中添加以下配置：
+```bash
+cd your-hugo-site
+git clone https://github.com/harrison-ming/totvan-hugo-theme.git themes/totvan
+```
+
+## 📖 文档
+
+### 入门指南
+
+- [安装指南](docs/getting-started.md) - 详细的安装和配置步骤
+- [配置参考](docs/configuration.md) - 所有配置选项说明
+- [示例配置](hugo.toml.example) - 完整的配置示例文件
+
+### 功能文档
+
+- [首页布局](docs/homepage-layouts.md) - 4 种首页布局使用指南
+- [组件和函数](docs/components-and-functions.md) - 可复用组件和函数 API
+- [Waline 集成](docs/waline/integration-guide.md) - 评论系统集成指南
+
+### 改进计划
+
+- [改进计划总览](docs/improvement-plan/README.md) - ToTVan 演进路线图
+- [Phase 1: SEO 模块化](docs/improvement-plan/phase1-seo-modules.md)
+- [Phase 2: 首页系统](docs/improvement-plan/phase2-homepage-system.md)
+- [Phase 3: Partials 重构](docs/improvement-plan/phase3-partials-refactor.md)
+
+## 🏠 首页布局选择
+
+ToTVan 提供 4 种内置首页布局,无需编写代码即可切换:
+
+### 1. Category Grid (默认)
+
+适合多分类内容站点。
 
 ```toml
+[params.homepage]
+  layout = "category-grid"
+```
+
+**特点**: 最新文章 + 多个分类网格
+
+### 2. Magazine
+
+适合新闻媒体、杂志网站。
+
+```toml
+[params.homepage]
+  layout = "magazine"
+```
+
+**特点**: 大型 Hero 区域 + 编辑推荐 + 热门分类
+
+### 3. Minimal
+
+适合个人博客、技术博客。
+
+```toml
+[params.homepage]
+  layout = "minimal"
+```
+
+**特点**: 极简文字列表,专注内容
+
+### 4. Hero-Featured
+
+适合品牌网站、媒体平台。
+
+```toml
+[params.homepage]
+  layout = "hero-featured"
+```
+
+**特点**: 全宽 Hero + 特色文章网格
+
+详见: [首页布局文档](docs/homepage-layouts.md)
+
+## ⚙️ 基础配置
+
+### 最小配置
+
+```toml
+# hugo.toml
+baseURL = 'https://example.com/'
+languageCode = 'zh-CN'
+title = '我的网站'
+theme = 'totvan'
+
 [params]
-  description = '你的网站描述'
-  mainSections = 'posts'
+  description = '网站描述'
+
+[params.author]
+  name = '作者名'
+  email = 'author@example.com'
+```
+
+### 完整配置示例
+
+```toml
+# hugo.toml
+baseURL = 'https://totvan.com/'
+languageCode = 'zh-CN'
+title = 'ToTVan'
+theme = 'totvan'
+
+[params]
+  description = 'ToTVan: 温哥华生活资讯'
+  mainSections = ['posts']
+
+  # 首页布局
+  [params.homepage]
+    layout = "category-grid"  # 或 magazine, minimal, hero-featured
+
+    [params.homepage.categoryGrid]
+      topCategoriesCount = 7
+      postsPerCategory = 3
+      latestPostsCount = 3
+
+  # SEO 和营销
+  [params.marketing]
+    [params.marketing.seo]
+      site_type = "Organization"
+      org_name = "ToTVan"
+
+    [params.marketing.analytics]
+      google_analytics = "G-XXXXXXXXXX"
 
   # Logo 配置
   [params.logo]
-    url = "https://your-cdn.com/logo.png"
+    url = "https://cdn.example.com/logo.png"
     width = 60
     height = 60
-    alt = "网站 Logo"
+    alt = "ToTVan Logo"
 
-  # Google AdSense 配置（可选）
+  # 作者信息
+  [params.author]
+    name = 'Harrison Ming'
+    email = 'author@totvan.com'
+    bio = '温哥华生活资讯分享'
+
+  # AdSense (可选)
   [params.adsense]
     enable = true
     client = "ca-pub-xxxxxx"
     header_slot = "xxxxxx"
     sidebar_slot = "xxxxxx"
 
-  [params.author]
-    name = '你的名字'
-    bio = '个人简介'
-    avatar = '/images/avatar.jpg'
-
-  # Waline 评论系统配置（可选）
+  # Waline 评论 (可选)
   [params.waline]
     serverURL = "https://your-waline.vercel.app"
-    # 更多配置见下方 Waline 集成章节
+    lang = "zh-CN"
+    pageview = true
 ```
 
-## Waline 评论系统集成
+完整配置选项见: [配置参考](docs/configuration.md)
 
-本主题集成了 Waline 评论系统，提供完整的评论功能。**Waline 需要单独部署后端服务**。
+## 🧩 使用组件
 
-### 部署 Waline 后端
+### 文章卡片组件
 
-1. **克隆后端仓库**
-   ```bash
-   git clone https://github.com/harrison-ming/totvan-waline.git
-   ```
+```go-html-template
+{{/* 纵向卡片 */}}
+{{ partial "components/article-card" (dict "page" . "variant" "vertical") }}
 
-2. **部署到 Vercel**
+{{/* 横向卡片带摘要 */}}
+{{ partial "components/article-card" (dict
+  "page" .
+  "variant" "horizontal"
+  "showExcerpt" true) }}
 
-   按照 [totvan-waline](https://github.com/harrison-ming/totvan-waline) 仓库中的文档：
-   - 部署 Waline 服务到 Vercel
-   - 配置 PostgreSQL 数据库
-   - （可选）配置 Cloudflare Worker 图片上传
-   - （可选）配置 OAuth 登录（Twitter/Google）
+{{/* 极简卡片 */}}
+{{ partial "components/article-card" (dict
+  "page" .
+  "variant" "minimal") }}
+```
 
-3. **获取 Waline 服务器 URL**
+### 实用函数
 
-   部署完成后，你会得到一个 Vercel URL，例如：
-   ```
-   https://your-project.vercel.app
-   ```
+```go-html-template
+{{/* 获取图片 URL */}}
+{{ $imgUrl := partial "functions/get-image-url" (dict "page" .) }}
 
-### 配置主题
+{{/* 格式化日期 */}}
+{{ $date := partial "functions/format-date" (dict "date" .Date "format" "long") }}
 
-在你的站点配置文件 `hugo.toml` 中添加 Waline 配置：
+{{/* 获取主分类 */}}
+{{ $category := partial "functions/get-primary-category" (dict "page" .) }}
+
+{{/* 获取顶级分类 */}}
+{{ $topCategories := partial "functions/get-top-categories" (dict "context" . "limit" 5) }}
+```
+
+详见: [组件和函数文档](docs/components-and-functions.md)
+
+## 💬 Waline 评论系统
+
+ToTVan 集成了 Waline 评论系统。
+
+### 快速设置
+
+1. **部署 Waline 后端**
+
+   参考: [totvan-waline](https://github.com/harrison-ming/totvan-waline)
+
+2. **配置主题**
 
 ```toml
 [params.waline]
-  serverURL = "https://your-waline.vercel.app"  # 必填：你的 Waline 服务器地址
-  lang = "zh-CN"                                 # 可选：语言
-  locale = {}                                    # 可选：自定义文本
-  emoji = ["https://unpkg.com/@waline/emojis@1.2.0/weibo"]  # 可选：表情包
-  dark = "auto"                                  # 可选：深色模式
-  meta = ["nick", "mail", "link"]                # 可选：评论者信息字段
-  requiredMeta = ["nick"]                        # 可选：必填字段
-  pageSize = 10                                  # 可选：每页评论数
-  wordLimit = [0, 1000]                          # 可选：评论字数限制
-  pageview = true                                # 可选：文章阅读量统计
-  comment = true                                 # 可选：评论数统计
+  serverURL = "https://your-waline.vercel.app"
+  lang = "zh-CN"
+  pageview = true
+  comment = true
 ```
 
-### 详细集成文档
+详见: [Waline 集成指南](docs/waline/integration-guide.md)
 
-- **完整集成指南**：[docs/waline/integration-guide.md](docs/waline/integration-guide.md)
-- **自定义登录页面**：[docs/waline/custom-login.md](docs/waline/custom-login.md)
-- **后端部署文档**：[totvan-waline 仓库](https://github.com/harrison-ming/totvan-waline)
-
-## 目录结构
+## 📁 项目结构
 
 ```
-totvan-theme/
-├── layouts/              # 模板文件
-│   ├── _default/        # 默认模板
-│   ├── partials/        # 可复用组件
-│   └── taxonomy/        # 分类/标签模板
-├── static/              # 静态资源
-│   ├── css/
-│   ├── js/
-│   └── images/
-├── assets/              # 需编译资源
+totvan-hugo-theme/
+├── layouts/
+│   ├── _default/           # 默认布局
+│   │   ├── baseof.html     # 基础模板
+│   │   ├── home.html       # 首页路由
+│   │   ├── single.html     # 文章页
+│   │   └── list.html       # 列表页
+│   ├── partials/
+│   │   ├── totvan/         # ToTVan 核心组件
+│   │   │   ├── seo.html
+│   │   │   ├── analytics.html
+│   │   │   └── head-basic.html
+│   │   ├── home-layouts/   # 首页布局
+│   │   │   ├── category-grid.html
+│   │   │   ├── magazine.html
+│   │   │   ├── minimal.html
+│   │   │   └── hero-featured.html
+│   │   ├── components/     # 可复用组件
+│   │   │   └── article-card.html
+│   │   └── functions/      # 实用函数
+│   │       ├── get-image-url.html
+│   │       ├── format-date.html
+│   │       ├── get-primary-category.html
+│   │       ├── get-top-categories.html
+│   │       └── get-latest-posts-excluding.html
+├── assets/
 │   ├── css/
 │   └── js/
-└── theme.toml          # 主题配置
+├── static/
+├── docs/                   # 文档
+└── hugo.toml.example      # 示例配置
 ```
 
-## 模板组件
+## 🎨 自定义样式
 
-### 卡片组件
+### 方法 1: 站点配置
 
-```html
-<!-- 垂直卡片（首页） -->
-{{- partial "content/card-vertical.html" . -}}
+在你的站点的 `assets/css/custom.css`:
 
-<!-- 横向卡片（列表页） -->
-{{- partial "content/card.html" . -}}
+```css
+/* 自定义主题颜色 */
+:root {
+  --primary-color: #3b82f6;
+}
 
-<!-- 小卡片（侧边栏） -->
-{{- partial "content/list-post.html" . -}}
+/* 自定义样式 */
+.custom-class {
+  /* your styles */
+}
 ```
 
-### 图片组件
+### 方法 2: Tailwind 配置
 
-```html
-<!-- 优化图片 -->
-{{- partial "content/optimized-image.html" (dict
-  "src" .Params.image
-  "alt" .Title
-  "class" "w-full h-full object-cover"
-  "loading" "lazy"
-  "priority" false) -}}
+修改站点的 `tailwind.config.js`:
 
-<!-- 占位符 -->
-{{- partial "content/image-placeholder.html" (dict "size" "w-16 h-16") -}}
+```js
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          500: '#3b82f6',
+          600: '#2563eb',
+        },
+      },
+    },
+  },
+}
 ```
 
-## 自定义样式
+## 📊 性能
 
-主题使用 Tailwind CSS，你可以通过以下方式自定义：
+- ⚡ 构建速度: ~10s (3981 页面)
+- 🎯 Lighthouse 分数: 95+ (性能)
+- 📦 CSS 包大小: ~50KB (压缩后)
+- 🖼️ 图片优化: 懒加载 + CDN
 
-1. 编辑 `assets/css/custom.css` 添加自定义样式
-2. 修改 `assets/input.css` 配置 Tailwind
+## 🌐 浏览器支持
 
-## 浏览器支持
+- Chrome (最新 2 个版本)
+- Firefox (最新 2 个版本)
+- Safari (最新 2 个版本)
+- Edge (最新 2 个版本)
 
-- Chrome (最新版)
-- Firefox (最新版)
-- Safari (最新版)
-- Edge (最新版)
+## 🔄 更新日志
 
-## 贡献
+查看 [CHANGELOG.md](CHANGELOG.md) 了解详细更新历史。
 
-欢迎提交 Issue 和 Pull Request！
+### 最新版本: v1.0.0
 
-## 许可证
+- ✅ 模块化 SEO 和 Analytics 系统
+- ✅ 4 种灵活的首页布局
+- ✅ 统一的组件和函数库
+- ✅ 完整的文档和示例
 
-MIT License
+## 🤝 贡献
 
-## 鸣谢
+欢迎提交 Issue 和 Pull Request!
 
-基于 [pehtheme-hugo](https://github.com/fauzanmy/pehtheme-hugo) 主题重构开发。
+1. Fork 本仓库
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的改动 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 详见 [LICENSE](LICENSE) 文件
+
+## 🙏 鸣谢
+
+- 基于 [pehtheme-hugo](https://github.com/fauzanmy/pehtheme-hugo) 重构开发
+- 受 [Hugo Blox Builder](https://github.com/HugoBlox/hugo-blox-builder) 启发
+
+## 📧 联系方式
+
+- **作者**: Harrison Ming
+- **网站**: [ToTVan.com](https://totvan.com)
+- **GitHub**: [harrison-ming](https://github.com/harrison-ming)
+- **Issues**: [GitHub Issues](https://github.com/harrison-ming/totvan-hugo-theme/issues)
 
 ---
 
-Made with ❤️ by Harrison Ming
+⭐ 如果这个主题对你有帮助,请给个 Star!
+
+Made with ❤️ for the Hugo community

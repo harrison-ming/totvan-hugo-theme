@@ -1,0 +1,203 @@
+# ToTVan Hugo Theme - Example Configuration
+# Copy this file to your Hugo site root as hugo.toml and customize as needed
+
+baseURL = 'https://example.com/'
+languageCode = 'zh-CN'
+title = 'My ToTVan Site'
+theme = 'totvan'  # or use Hugo modules (see README.md)
+
+# Content settings
+[params]
+  description = 'A modern content site built with ToTVan theme'
+  mainSections = ['posts']  # Main content sections
+
+  # =============================================================================
+  # Homepage Layout Configuration
+  # =============================================================================
+  # Choose from: category-grid (default), magazine, minimal, hero-featured
+  # See docs/homepage-layouts.md for details
+  [params.homepage]
+    layout = "category-grid"
+
+    # Category Grid Layout (default)
+    [params.homepage.categoryGrid]
+      topCategoriesCount = 7      # Number of categories to display
+      postsPerCategory = 3        # Posts per category
+      latestPostsCount = 3        # Latest posts in top section
+
+    # Magazine Layout
+    [params.homepage.magazine]
+      heroPostsCount = 3          # Hero section posts (1 large + 2 small)
+      featuredPostsCount = 6      # Featured posts grid
+      topCategoriesCount = 3      # Top categories to show
+      postsPerCategory = 4        # Posts per category
+
+    # Minimal Layout
+    [params.homepage.minimal]
+      title = "Welcome"           # Custom homepage title
+      subtitle = "My Blog"        # Custom homepage subtitle
+      postsCount = 15             # Posts to display
+      showCategories = true       # Show category tags
+      groupByMonth = false        # Group posts by month
+      showCategoryCloud = true    # Show category cloud
+
+    # Hero-Featured Layout
+    [params.homepage.heroFeatured]
+      featuredPostsCount = 6      # Featured posts grid
+      topCategoriesCount = 4      # Top categories
+      postsPerCategory = 3        # Posts per category
+
+  # =============================================================================
+  # SEO and Marketing
+  # =============================================================================
+  [params.marketing]
+    [params.marketing.seo]
+      site_type = "Organization"  # or "Person", "WebSite"
+      org_name = "My Organization"
+
+    [params.marketing.analytics]
+      google_analytics = "G-XXXXXXXXXX"  # Your GA4 measurement ID
+
+  # =============================================================================
+  # Branding
+  # =============================================================================
+  [params.logo]
+    url = "https://cdn.example.com/logo.png"
+    width = 60
+    height = 60
+    alt = "Site Logo"
+
+  [params.author]
+    name = 'Your Name'
+    email = 'author@example.com'
+    bio = 'Brief bio or tagline'
+    avatar = '/images/avatar.jpg'  # Optional
+
+  # =============================================================================
+  # Google AdSense (Optional)
+  # =============================================================================
+  [params.adsense]
+    enable = true
+    client = "ca-pub-xxxxxxxxxxxxxx"
+    header_slot = "xxxxxxxxxx"     # Ad slot ID for header
+    sidebar_slot = "xxxxxxxxxx"    # Ad slot ID for sidebar
+
+  # =============================================================================
+  # Waline Comment System (Optional)
+  # =============================================================================
+  # Requires separate Waline backend deployment
+  # See docs/waline/integration-guide.md
+  [params.waline]
+    serverURL = "https://your-waline.vercel.app"
+    lang = "zh-CN"
+    locale = {}                    # Custom text translations
+    emoji = ["https://unpkg.com/@waline/emojis@1.2.0/weibo"]
+    dark = "auto"                  # auto, true, false
+    meta = ["nick", "mail", "link"]
+    requiredMeta = ["nick"]
+    pageSize = 10
+    wordLimit = [0, 1000]
+    pageview = true                # Enable pageview count
+    comment = true                 # Enable comment count
+
+  # =============================================================================
+  # Navigation Menu (Optional)
+  # =============================================================================
+  # Custom menu items (auto-generated if not specified)
+  # [[params.menu]]
+  #   name = "Home"
+  #   url = "/"
+  # [[params.menu]]
+  #   name = "About"
+  #   url = "/about/"
+
+# =============================================================================
+# Hugo Configuration
+# =============================================================================
+
+# Build settings
+[build]
+  writeStats = true
+
+# Module settings (if using Hugo modules instead of git submodule)
+[module]
+  [[module.imports]]
+    path = "github.com/harrison-ming/totvan-hugo-theme"
+
+# Markup settings
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true  # Allow HTML in markdown
+
+  [markup.highlight]
+    style = 'monokai'
+    lineNos = true
+    lineNumbersInTable = true
+
+# Sitemap
+[sitemap]
+  changefreq = 'daily'
+  filename = 'sitemap.xml'
+  priority = 0.5
+
+# Permalinks
+[permalinks]
+  posts = '/:year/:month/:day/:slug/'
+
+# Taxonomies
+[taxonomies]
+  category = 'categories'
+  tag = 'tags'
+
+# Languages (if multilingual)
+# [languages]
+#   [languages.en]
+#     languageName = 'English'
+#     weight = 1
+#   [languages.zh]
+#     languageName = '中文'
+#     weight = 2
+
+# =============================================================================
+# Advanced Configuration
+# =============================================================================
+
+# Pagination
+paginate = 12
+
+# Security
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^CI$']
+
+# Privacy
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    respectDoNotTrack = true
+
+# Output formats
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+  page = ['HTML']
+  section = ['HTML', 'RSS']
+
+# Minification (production)
+[minify]
+  disableCSS = false
+  disableHTML = false
+  disableJS = false
+  disableJSON = false
+  disableSVG = false
+  disableXML = false
+
+# =============================================================================
+# Front Matter Defaults (Optional)
+# =============================================================================
+# Set default values for content front matter
+[frontmatter]
+  date = ['date', 'publishDate', 'lastmod']
+  lastmod = [':git', 'lastmod', 'date', 'publishDate']
+  publishDate = ['publishDate', 'date']
+  expiryDate = ['expiryDate']
