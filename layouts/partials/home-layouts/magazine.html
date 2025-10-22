@@ -14,7 +14,6 @@
     params.homepage.magazine.postsPerCategory (默认: 4)
 */ -}}
 
-{{ define "main" }}
 
 {{- /* 获取配置参数 */ -}}
 {{- $heroPostsCount := site.Params.homepage.magazine.heroPostsCount | default 3 -}}
@@ -200,4 +199,3 @@
 <!-- 订阅部分 -->
 {{- partial "content/newsletter.html" . -}}
 
-{{ end }}

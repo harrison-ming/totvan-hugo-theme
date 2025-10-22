@@ -14,7 +14,6 @@
     params.homepage.heroFeatured.postsPerCategory (默认: 3)
 */ -}}
 
-{{ define "main" }}
 
 {{- /* 获取配置参数 */ -}}
 {{- $featuredPostsCount := site.Params.homepage.heroFeatured.featuredPostsCount | default 6 -}}
@@ -258,4 +257,3 @@
 <!-- 订阅部分 -->
 {{- partial "content/newsletter.html" . -}}
 
-{{ end }}

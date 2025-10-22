@@ -14,7 +14,6 @@
     params.homepage.minimal.groupByMonth (默认: false)
 */ -}}
 
-{{ define "main" }}
 
 {{- /* 获取配置参数 */ -}}
 {{- $postsCount := site.Params.homepage.minimal.postsCount | default 15 -}}
@@ -131,4 +130,3 @@
 <!-- 订阅部分 -->
 {{- partial "content/newsletter.html" . -}}
 
-{{ end }}
