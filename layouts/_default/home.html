@@ -1,3 +1,4 @@
+{{- define "main" -}}
 {{- /*
   ToTVan Homepage Router
 
@@ -38,4 +39,5 @@
   {{- /* 回退到 category-grid */ -}}
   {{- warnf "Homepage layout template '%s' not found. Using 'category-grid' as fallback." $layoutTemplate -}}
   {{- partial "home-layouts/category-grid.html" . -}}
+{{- end -}}
 {{- end -}}
