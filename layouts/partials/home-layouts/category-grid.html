@@ -1,0 +1,90 @@
+{{- /*
+  Category Grid 首页布局 (默认布局)
+
+  特点:
+  - 顶部显示最新文章 (3篇)
+  - 按文章数量展示前7个分类,每个分类显示3篇文章
+  - 网格布局,响应式设计
+  - 适合内容站点的默认展示
+
+  配置:
+    params.homepage.categoryGrid.topCategoriesCount (默认: 7)
+    params.homepage.categoryGrid.postsPerCategory (默认: 3)
+    params.homepage.categoryGrid.latestPostsCount (默认: 3)
+*/ -}}
+
+{{ define "main" }}
+
+{{- /* 获取配置参数 */ -}}
+{{- $topCategoriesCount := site.Params.homepage.categoryGrid.topCategoriesCount | default 7 -}}
+{{- $postsPerCategory := site.Params.homepage.categoryGrid.postsPerCategory | default 3 -}}
+{{- $latestPostsCount := site.Params.homepage.categoryGrid.latestPostsCount | default 3 -}}
+
+{{- /* 使用函数获取顶级分类 */ -}}
+{{- $topCategories := partial "functions/get-top-categories" (dict "context" . "limit" $topCategoriesCount "minPosts" 2) -}}
+
+{{- /* 收集将在分类中展示的文章,用于排除 */ -}}
+{{- $excludedPages := slice -}}
+{{- range $topCategories -}}
+  {{- range first $postsPerCategory .taxonomy.Pages -}}
+    {{- $excludedPages = $excludedPages | append . -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* 使用函数获取最新文章 */ -}}
+{{- $latestPosts := partial "functions/get-latest-posts-excluding" (dict "context" . "excludePages" $excludedPages "limit" $latestPostsCount) -}}
+
+<!-- 最新文章部分 -->
+<section class="mb-8 md:mb-12 mt-10 md:mt-14">
+  <div class="flex items-center mb-6 gap-4">
+    <h2 class="text-xl md:text-2xl font-bold">最新文章</h2>
+    <a class="border rounded-full text-sm py-2 px-4 md:px-5 hover:bg-primary-50 hover:border-primary-300 transition-colors font-medium" href="{{ "/posts/" | absURL }}">查看全部</a>
+  </div>
+
+  <!-- Web端显示纵向卡片网格 -->
+  <div class="hidden md:grid md:grid-cols-3 gap-x-6 gap-y-10">
+    {{ range $latestPosts }}
+      {{- partial "content/card-vertical" . -}}
+    {{ end }}
+  </div>
+
+  <!-- 移动端显示横向卡片列表 -->
+  <div class="md:hidden space-y-4">
+    {{ range $latestPosts }}
+      {{- partial "content/card" . -}}
+    {{ end }}
+  </div>
+</section>
+
+<hr class="my-8">
+
+<!-- 分类部分 -->
+{{- range $topCategories -}}
+  <section class="mb-10">
+    <div class="flex items-center mb-6 gap-4">
+      <h2 class="text-xl font-bold">{{ .name }}</h2>
+      <a class="border rounded-full py-2 px-4 md:px-6 hover:bg-primary-50 hover:border-primary-300 transition-colors" href="{{ printf "/categories/%s/" (.name | urlize) | relURL }}">查看全部</a>
+    </div>
+
+    <!-- Web端显示纵向卡片网格 -->
+    <div class="hidden md:grid md:grid-cols-3 gap-x-6 gap-y-10">
+      {{ range first $postsPerCategory .taxonomy.Pages }}
+        {{- partial "content/card-vertical" . -}}
+      {{ end }}
+    </div>
+
+    <!-- 移动端显示横向卡片列表 -->
+    <div class="md:hidden space-y-4">
+      {{ range first $postsPerCategory .taxonomy.Pages }}
+        {{- partial "content/card" . -}}
+      {{ end }}
+    </div>
+  </section>
+
+  <hr class="my-8">
+{{- end -}}
+
+<!-- 订阅部分 -->
+{{- partial "content/newsletter.html" . -}}
+
+{{ end }}

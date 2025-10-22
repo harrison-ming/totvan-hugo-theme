@@ -1,0 +1,43 @@
+{{- /*
+  获取最新文章,排除指定的文章列表
+
+  参数:
+    . (dict) - 参数字典
+      context - Hugo 上下文
+      excludePages (slice) - 要排除的页面列表
+      limit (int, optional) - 返回文章数量,默认为 3
+
+  返回:
+    slice of Page - 最新文章列表(已排除指定文章)
+
+  用法示例:
+    {{ $excluded := slice $page1 $page2 }}
+    {{ $latest := partial "functions/get-latest-posts-excluding" (dict "context" . "excludePages" $excluded "limit" 5) }}
+*/ -}}
+
+{{- $context := .context | default . -}}
+{{- $excludePages := .excludePages | default slice -}}
+{{- $limit := .limit | default 3 -}}
+
+{{- $latestPosts := slice -}}
+{{- $mainSections := $context.Site.Params.mainSections | default (slice "posts") -}}
+
+{{- range where $context.Site.RegularPages "Type" "in" $mainSections -}}
+  {{- if lt (len $latestPosts) $limit -}}
+    {{- $currentPage := . -}}
+    {{- $isExcluded := false -}}
+
+    {{- /* 检查当前页面是否在排除列表中 */ -}}
+    {{- range $excludePages -}}
+      {{- if eq .File.UniqueID $currentPage.File.UniqueID -}}
+        {{- $isExcluded = true -}}
+      {{- end -}}
+    {{- end -}}
+
+    {{- if not $isExcluded -}}
+      {{- $latestPosts = $latestPosts | append $currentPage -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+
+{{- return $latestPosts -}}

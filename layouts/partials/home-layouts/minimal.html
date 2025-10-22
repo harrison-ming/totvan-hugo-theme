@@ -1,0 +1,134 @@
+{{- /*
+  Minimal 首页布局
+
+  特点:
+  - 极简设计,专注内容
+  - 时间线式文章列表
+  - 仅显示标题、摘要、日期
+  - 无图片,纯文字
+  - 适合个人博客、技术博客
+
+  配置:
+    params.homepage.minimal.postsCount (默认: 15)
+    params.homepage.minimal.showCategories (默认: true)
+    params.homepage.minimal.groupByMonth (默认: false)
+*/ -}}
+
+{{ define "main" }}
+
+{{- /* 获取配置参数 */ -}}
+{{- $postsCount := site.Params.homepage.minimal.postsCount | default 15 -}}
+{{- $showCategories := site.Params.homepage.minimal.showCategories | default true -}}
+{{- $groupByMonth := site.Params.homepage.minimal.groupByMonth | default false -}}
+
+{{- /* 获取文章 */ -}}
+{{- $mainSections := site.Params.mainSections | default (slice "posts") -}}
+{{- $allPosts := where site.RegularPages "Type" "in" $mainSections | first $postsCount -}}
+
+<!-- 简介/欢迎区域 -->
+<section class="mb-12 md:mb-16 mt-8 md:mt-12 text-center max-w-3xl mx-auto">
+  {{- with site.Params.homepage.minimal.title | default site.Title -}}
+  <h1 class="text-3xl md:text-5xl font-bold text-gray-900 mb-4">{{ . }}</h1>
+  {{- end -}}
+  {{- with site.Params.homepage.minimal.subtitle | default site.Params.description -}}
+  <p class="text-lg md:text-xl text-gray-600 leading-relaxed">{{ . }}</p>
+  {{- end -}}
+</section>
+
+<!-- 文章列表 -->
+<section class="max-w-4xl mx-auto mb-12">
+  {{- if $groupByMonth -}}
+    {{- /* 按月份分组 */ -}}
+    {{- range $allPosts.GroupByDate "2006-01" -}}
+    <div class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-primary-200">
+        {{ .Key | time.Format ":date_full" }}
+      </h2>
+
+      <div class="space-y-8">
+        {{- range .Pages -}}
+        {{- partial "content/minimal-article" . -}}
+        {{- end -}}
+      </div>
+    </div>
+    {{- end -}}
+  {{- else -}}
+    {{- /* 不分组,连续列表 */ -}}
+    <div class="space-y-8">
+      {{- range $allPosts -}}
+      <article class="group border-b border-gray-200 pb-8 last:border-b-0">
+        {{- /* 日期 */ -}}
+        <time class="block text-sm text-gray-500 mb-2" datetime="{{ .Date.Format "2006-01-02" }}">
+          {{ .Date.Format "January 2, 2006" }}
+        </time>
+
+        {{- /* 标题 */ -}}
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-snug">
+          <a href="{{ .RelPermalink }}" class="hover:text-primary-600 transition-colors">
+            {{ .Title }}
+          </a>
+        </h2>
+
+        {{- /* 分类 */ -}}
+        {{- if $showCategories -}}
+          {{- with .Params.categories -}}
+          <div class="flex flex-wrap gap-2 mb-3">
+            {{- range . -}}
+            <a href="{{ printf "/categories/%s/" (. | urlize) | relURL }}"
+               class="text-xs px-2 py-1 bg-gray-100 hover:bg-primary-100 text-gray-700 hover:text-primary-700 rounded transition-colors">
+              {{ . }}
+            </a>
+            {{- end -}}
+          </div>
+          {{- end -}}
+        {{- end -}}
+
+        {{- /* 摘要 */ -}}
+        {{- with .Description | default .Summary -}}
+        <p class="text-base md:text-lg text-gray-600 leading-relaxed mb-4">
+          {{ . | truncate 200 }}
+        </p>
+        {{- end -}}
+
+        {{- /* 阅读更多链接 */ -}}
+        <a href="{{ .RelPermalink }}"
+           class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors">
+          阅读全文
+          <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </article>
+      {{- end -}}
+    </div>
+  {{- end -}}
+
+  {{- /* 查看更多按钮 */ -}}
+  <div class="text-center mt-12">
+    <a href="{{ "/posts/" | absURL }}"
+       class="inline-block px-8 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-lg shadow hover:shadow-lg transition-all">
+      查看所有文章
+    </a>
+  </div>
+</section>
+
+<!-- 分类云 (可选) -->
+{{- if site.Params.homepage.minimal.showCategoryCloud | default false -}}
+<section class="max-w-4xl mx-auto mb-12 p-6 bg-gray-50 rounded-lg">
+  <h3 class="text-xl font-bold text-gray-800 mb-4 text-center">分类</h3>
+  <div class="flex flex-wrap justify-center gap-3">
+    {{- $topCategories := partial "functions/get-top-categories" (dict "context" . "limit" 0 "minPosts" 1) -}}
+    {{- range $topCategories -}}
+    <a href="{{ printf "/categories/%s/" (.name | urlize) | relURL }}"
+       class="px-4 py-2 bg-white hover:bg-primary-50 border border-gray-200 hover:border-primary-300 rounded-full text-gray-700 hover:text-primary-700 transition-all shadow-sm hover:shadow">
+      {{ .name }} <span class="text-xs text-gray-500">({{ .count }})</span>
+    </a>
+    {{- end -}}
+  </div>
+</section>
+{{- end -}}
+
+<!-- 订阅部分 -->
+{{- partial "content/newsletter.html" . -}}
+
+{{ end }}

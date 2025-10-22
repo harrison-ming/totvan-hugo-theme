@@ -1,0 +1,39 @@
+{{- /*
+  获取按文章数量排序的顶级分类
+
+  参数:
+    . (context) - Hugo 上下文
+    limit (int, optional) - 返回分类数量限制,默认为 7
+    minPosts (int, optional) - 最小文章数量,默认为 2
+
+  返回:
+    slice of dict - 分类列表,每个包含 name, count, taxonomy
+
+  用法示例:
+    {{ $topCategories := partial "functions/get-top-categories" (dict "context" . "limit" 5 "minPosts" 3) }}
+    {{ range $topCategories }}
+      <h2>{{ .name }} ({{ .count }} 篇)</h2>
+    {{ end }}
+*/ -}}
+
+{{- $context := .context | default . -}}
+{{- $limit := .limit | default 7 -}}
+{{- $minPosts := .minPosts | default 2 -}}
+
+{{- $categories := slice -}}
+{{- range $name, $taxonomy := $context.Site.Taxonomies.categories -}}
+  {{- $count := len $taxonomy -}}
+  {{- if ge $count $minPosts -}}
+    {{- $categories = $categories | append (dict "name" $name "count" $count "taxonomy" $taxonomy) -}}
+  {{- end -}}
+{{- end -}}
+
+{{- /* 按文章数量降序排序 */ -}}
+{{- $categories = sort $categories "count" "desc" -}}
+
+{{- /* 限制返回数量 */ -}}
+{{- if gt $limit 0 -}}
+  {{- $categories = $categories | first $limit -}}
+{{- end -}}
+
+{{- return $categories -}}
