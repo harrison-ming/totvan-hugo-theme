@@ -1,0 +1,40 @@
+{{/* ToTVan 专有的性能优化和基础配置 */}}
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+{{/* DNS 预连接 - 提前建立连接到重要的外部域名 */}}
+<link rel="preconnect" href="https://imagedelivery.net" crossorigin>
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="dns-prefetch" href="//imagedelivery.net">
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+
+{{/* 关键资源预加载 */}}
+{{- if .IsHome -}}
+  {{/* 首页关键资源预加载 */}}
+  {{- $mainCSS := resources.Get "css/main.css" -}}
+  {{- $customCSS := resources.Get "css/custom.css" -}}
+  {{- if and $mainCSS $customCSS -}}
+    {{- $styles := slice $mainCSS $customCSS -}}
+    {{- $bundledCSS := $styles | resources.Concat "css/bundle.css" -}}
+    {{- if ne hugo.Environment "development" -}}
+      {{- $bundledCSS = $bundledCSS | minify | fingerprint -}}
+    {{- end -}}
+    <link rel="preload" href="{{ $bundledCSS.RelPermalink }}" as="style">
+  {{- end -}}
+{{- else if eq .Type "posts" -}}
+  {{/* 文章页面预加载特色图片 */}}
+  {{- if .Params.image -}}
+    {{- if hasPrefix .Params.image "http" -}}
+      <link rel="preload" href="{{ .Params.image }}" as="image" crossorigin>
+    {{- else -}}
+      {{- with resources.Get .Params.image -}}
+        {{- $optimized := . -}}
+        {{- if ge .Width 800 -}}
+          {{- $optimized = .Resize "800x" -}}
+        {{- end -}}
+        <link rel="preload" href="{{ $optimized.RelPermalink }}" as="image">
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}

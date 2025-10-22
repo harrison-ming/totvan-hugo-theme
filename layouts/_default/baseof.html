@@ -1,7 +1,24 @@
 <!DOCTYPE html>
 <html lang="{{ or site.Language.LanguageCode site.Language.Lang }}" dir="{{ or site.Language.LanguageDirection `ltr` }}">
 <head>
-  {{ partial "head.html" . }}
+  {{/* 基础配置和性能优化 */}}
+  {{ partial "totvan/head-basic.html" . }}
+
+  {{/* SEO */}}
+  {{ partial "totvan/seo.html" . }}
+
+  {{/* Analytics */}}
+  {{ partial "totvan/analytics.html" . }}
+
+  {{/* CSS 和 Favicon */}}
+  {{ partialCached "head/css.html" . }}
+  {{ partial "head/favicon.html" . }}
+
+  {{/* AdSense (保持原样) */}}
+  {{- if site.Params.adsense.enable -}}
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.Params.adsense.client }}"
+     crossorigin="anonymous"></script>
+  {{- end -}}
   <style>
     /* 全局移动端防止横向滚动 */
     html, body {

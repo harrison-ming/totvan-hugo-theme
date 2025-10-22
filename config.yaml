@@ -1,0 +1,12 @@
+# 暂时注释掉 blox 模块，Phase 1 先使用简化的自有实现
+# module:
+#   mounts:
+#     - source: assets
+#       target: assets
+#     - source: layouts
+#       target: layouts
+#     - source: static
+#       target: static
+#   imports:
+#     - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-seo
+#     - path: github.com/HugoBlox/hugo-blox-builder/modules/blox-analytics
