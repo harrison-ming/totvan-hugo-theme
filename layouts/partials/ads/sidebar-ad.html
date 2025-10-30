@@ -1,0 +1,82 @@
+{{- /*
+  侧边栏广告位组件
+
+  支持三种模式:
+  1. mode = "none" - 不展示任何广告 (默认)
+  2. mode = "custom" - 展示自定义图片广告
+  3. mode = "adsense" - 展示 Google AdSense 广告
+
+  配置示例:
+  [params.sidebarAd]
+    mode = "custom"  # 可选值: "none" | "custom" | "adsense"
+
+    # 自定义广告配置
+    [params.sidebarAd.custom]
+      image = "/images/ads/sidebar-ad.png"
+      link = "https://example.com"
+      alt = "广告描述"
+      title = "广告标题"
+      target = "_blank"  # 可选，默认 "_blank"
+
+    # AdSense 配置
+    [params.sidebarAd.adsense]
+      client = "ca-pub-xxxxxx"
+      slot = "xxxxxx"
+*/ -}}
+
+{{- $mode := "none" -}}
+{{- $config := dict -}}
+
+{{- /* 获取广告配置 */ -}}
+{{- if site.Params.sidebarAd -}}
+  {{- $mode = site.Params.sidebarAd.mode | default "none" -}}
+  {{- $config = site.Params.sidebarAd -}}
+{{- else if site.Params.adsense.enable -}}
+  {{- /* 向后兼容旧配置 */ -}}
+  {{- $mode = "adsense" -}}
+  {{- $config = dict "adsense" (dict
+      "client" site.Params.adsense.client
+      "slot" site.Params.adsense.sidebar_slot) -}}
+{{- end -}}
+
+{{- /* 根据模式渲染广告 */ -}}
+{{- if eq $mode "adsense" -}}
+  {{- /* Google AdSense 广告 */ -}}
+  {{- with $config.adsense -}}
+  <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="fluid"
+         data-ad-layout-key="-6t+ed+2i-1n-4w"
+         data-ad-client="{{ .client }}"
+         data-ad-slot="{{ .slot }}"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  {{- end -}}
+
+{{- else if eq $mode "custom" -}}
+  {{- /* 自定义图片广告 */ -}}
+  {{- with $config.custom -}}
+  <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+    <a href="{{ .link }}"
+       target="{{ .target | default "_blank" }}"
+       rel="noopener noreferrer"
+       class="block hover:opacity-90 transition-opacity"
+       {{- with .title }} title="{{ . }}"{{ end }}>
+      <img src="{{ .image }}"
+           alt="{{ .alt | default "广告" }}"
+           class="w-full h-auto rounded"
+           style="max-width: 100%; height: auto; display: block;"
+           loading="lazy">
+      {{- with .title -}}
+      <p class="text-sm text-gray-600 mt-2 text-center">{{ . }}</p>
+      {{- end -}}
+    </a>
+  </div>
+  {{- end -}}
+
+{{- else if eq $mode "none" -}}
+  {{- /* 不渲染任何内容，下方元素会自动上移 */ -}}
+{{- end -}}

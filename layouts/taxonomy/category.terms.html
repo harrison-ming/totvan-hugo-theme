@@ -8,43 +8,124 @@
 
     <h2 class="text-2xl font-bold mb-6">{{ .Title | humanize }}</h2>
 
+    {{- /* 获取配置参数 */ -}}
+    {{- $minArticles := site.Params.categoryPage.minArticles | default 20 -}}
+    {{- $showLowFrequency := site.Params.categoryPage.showLowFrequency | default true -}}
+
+    {{- /* 统计分类数量 */ -}}
+    {{- $totalCategories := len .Data.Terms -}}
+    {{- $highFreqCount := 0 -}}
+    {{- range .Data.Terms.ByCount -}}
+      {{- if ge .Count $minArticles -}}
+        {{- $highFreqCount = add $highFreqCount 1 -}}
+      {{- end -}}
+    {{- end -}}
+    {{- $lowFreqCount := sub $totalCategories $highFreqCount -}}
+
+    {{- /* 高频分类区域 */ -}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
       {{- range .Data.Terms.ByCount -}}
+        {{- if ge .Count $minArticles -}}
 
-      <a href="{{ .Page.RelPermalink }}" class="category-card bg-white border border-gray-200 rounded-xl p-4 transition-all hover:bg-primary-50 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="category-icon w-8 h-8 rounded-full flex items-center justify-center text-white text-base flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
-            {{ $categoryName := .Page.LinkTitle | lower }}
-            {{ if or (in $categoryName "时事") (in $categoryName "新闻") }}📰
-            {{ else if or (in $categoryName "生活") (in $categoryName "社区") }}🏠
-            {{ else if or (in $categoryName "文化") (in $categoryName "艺术") }}🎨
-            {{ else if or (in $categoryName "体育") (in $categoryName "运动") }}⚽
-            {{ else if or (in $categoryName "政治") (in $categoryName "选举") }}🏛️
-            {{ else if or (in $categoryName "经济") (in $categoryName "财经") (in $categoryName "房地产") }}💼
-            {{ else if or (in $categoryName "健康") (in $categoryName "医疗") }}🏥
-            {{ else if or (in $categoryName "法律") (in $categoryName "司法") }}⚖️
-            {{ else if or (in $categoryName "旅游") (in $categoryName "旅行") }}✈️
-            {{ else if or (in $categoryName "美食") (in $categoryName "餐饮") }}🍽️
-            {{ else if or (in $categoryName "教育") (in $categoryName "学校") }}📚
-            {{ else if or (in $categoryName "科技") (in $categoryName "技术") }}💻
-            {{ else if or (in $categoryName "娱乐") (in $categoryName "电影") (in $categoryName "音乐") }}🎬
-            {{ else if or (in $categoryName "环境") (in $categoryName "气候") }}🌍
-            {{ else if or (in $categoryName "交通") (in $categoryName "运输") }}🚗
-            {{ else if in $categoryName "天气" }}🌤️
-            {{ else if or (in $categoryName "犯罪") (in $categoryName "安全") }}🚨
-            {{ else if in $categoryName "活动" }}🎉
-            {{ else }}📁
-            {{ end }}
+        <a href="{{ .Page.RelPermalink }}" class="category-card bg-white border border-gray-200 rounded-xl p-4 transition-all hover:bg-primary-50 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="category-icon w-8 h-8 rounded-full flex items-center justify-center text-white text-base flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+              {{ $categoryName := .Page.LinkTitle | lower }}
+              {{ if or (in $categoryName "时事") (in $categoryName "新闻") }}📰
+              {{ else if or (in $categoryName "生活") (in $categoryName "社区") }}🏠
+              {{ else if or (in $categoryName "文化") (in $categoryName "艺术") }}🎨
+              {{ else if or (in $categoryName "体育") (in $categoryName "运动") }}⚽
+              {{ else if or (in $categoryName "政治") (in $categoryName "选举") }}🏛️
+              {{ else if or (in $categoryName "经济") (in $categoryName "财经") (in $categoryName "房地产") }}💼
+              {{ else if or (in $categoryName "健康") (in $categoryName "医疗") }}🏥
+              {{ else if or (in $categoryName "法律") (in $categoryName "司法") }}⚖️
+              {{ else if or (in $categoryName "旅游") (in $categoryName "旅行") }}✈️
+              {{ else if or (in $categoryName "美食") (in $categoryName "餐饮") }}🍽️
+              {{ else if or (in $categoryName "教育") (in $categoryName "学校") }}📚
+              {{ else if or (in $categoryName "科技") (in $categoryName "技术") }}💻
+              {{ else if or (in $categoryName "娱乐") (in $categoryName "电影") (in $categoryName "音乐") }}🎬
+              {{ else if or (in $categoryName "环境") (in $categoryName "气候") }}🌍
+              {{ else if or (in $categoryName "交通") (in $categoryName "运输") }}🚗
+              {{ else if in $categoryName "天气" }}🌤️
+              {{ else if or (in $categoryName "犯罪") (in $categoryName "安全") }}🚨
+              {{ else if in $categoryName "活动" }}🎉
+              {{ else }}📁
+              {{ end }}
+            </div>
+            <span class="font-semibold text-gray-900">{{ .Page.LinkTitle | humanize }}</span>
           </div>
-          <span class="font-semibold text-gray-900">{{ .Page.LinkTitle | humanize }}</span>
-        </div>
-        <span class="category-count bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-medium min-w-10 text-center">{{ .Count }}</span>
-      </a>
+          <span class="category-count bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-medium min-w-10 text-center">{{ .Count }}</span>
+        </a>
 
-      {{ end }}
+        {{- end -}}
+      {{- end -}}
 
     </div>
+
+    {{- /* 低频分类区域（可折叠） */ -}}
+    {{- if and $showLowFrequency (gt $lowFreqCount 0) -}}
+
+    <!-- 折叠区域 -->
+    <details class="group mt-8">
+      <summary class="flex items-center text-lg font-medium text-primary-600 hover:text-primary-700 transition-colors py-3 px-4 bg-primary-50 rounded-lg cursor-pointer" style="list-style: none;">
+        <svg class="mr-2 transition-transform group-open:rotate-90" width="20" height="20" fill="currentColor" viewBox="0 0 20 20" style="min-width: 20px; min-height: 20px; max-width: 20px; max-height: 20px;">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+        </svg>
+        <span>📂 查看更多分类 <span class="text-gray-600">(还有 {{ $lowFreqCount }} 个)</span></span>
+      </summary>
+
+      <div class="mt-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+
+          {{- range .Data.Terms.ByCount -}}
+            {{- if lt .Count $minArticles -}}
+
+            <a href="{{ .Page.RelPermalink }}" class="category-card bg-white border border-gray-200 rounded-xl p-4 transition-all hover:bg-primary-50 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="category-icon w-8 h-8 rounded-full flex items-center justify-center text-white text-base flex-shrink-0" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                  {{ $categoryName := .Page.LinkTitle | lower }}
+                  {{ if or (in $categoryName "时事") (in $categoryName "新闻") }}📰
+                  {{ else if or (in $categoryName "生活") (in $categoryName "社区") }}🏠
+                  {{ else if or (in $categoryName "文化") (in $categoryName "艺术") }}🎨
+                  {{ else if or (in $categoryName "体育") (in $categoryName "运动") }}⚽
+                  {{ else if or (in $categoryName "政治") (in $categoryName "选举") }}🏛️
+                  {{ else if or (in $categoryName "经济") (in $categoryName "财经") (in $categoryName "房地产") }}💼
+                  {{ else if or (in $categoryName "健康") (in $categoryName "医疗") }}🏥
+                  {{ else if or (in $categoryName "法律") (in $categoryName "司法") }}⚖️
+                  {{ else if or (in $categoryName "旅游") (in $categoryName "旅行") }}✈️
+                  {{ else if or (in $categoryName "美食") (in $categoryName "餐饮") }}🍽️
+                  {{ else if or (in $categoryName "教育") (in $categoryName "学校") }}📚
+                  {{ else if or (in $categoryName "科技") (in $categoryName "技术") }}💻
+                  {{ else if or (in $categoryName "娱乐") (in $categoryName "电影") (in $categoryName "音乐") }}🎬
+                  {{ else if or (in $categoryName "环境") (in $categoryName "气候") }}🌍
+                  {{ else if or (in $categoryName "交通") (in $categoryName "运输") }}🚗
+                  {{ else if in $categoryName "天气" }}🌤️
+                  {{ else if or (in $categoryName "犯罪") (in $categoryName "安全") }}🚨
+                  {{ else if in $categoryName "活动" }}🎉
+                  {{ else }}📁
+                  {{ end }}
+                </div>
+                <span class="font-semibold text-gray-900">{{ .Page.LinkTitle | humanize }}</span>
+              </div>
+              <span class="category-count bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-xs font-medium min-w-10 text-center">{{ .Count }}</span>
+            </a>
+
+            {{- end -}}
+          {{- end -}}
+
+        </div>
+      </div>
+    </details>
+
+    <!-- 底部提示 -->
+    <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-sm text-blue-800">
+        💡 <strong>提示：</strong>页面默认显示文章数 ≥ {{ $minArticles }} 篇的分类，点击"查看更多分类"可查看全部 {{ $totalCategories }} 个分类。
+      </p>
+    </div>
+
+    {{- end -}}
 
   </section>
 
@@ -56,4 +137,4 @@
 
   </div>
 
-{{ end }} 
+{{ end }}

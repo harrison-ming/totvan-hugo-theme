@@ -57,6 +57,7 @@
 <hr class="my-8">
 
 <!-- 分类部分 -->
+{{- $displayedPages := slice -}}
 {{- range $topCategories -}}
   <section class="mb-10">
     <div class="flex items-center mb-6 gap-4">
@@ -64,16 +65,37 @@
       <a class="border rounded-full py-2 px-4 md:px-6 hover:bg-primary-50 hover:border-primary-300 transition-colors" href="{{ printf "/categories/%s/" (.name | urlize) | relURL }}">查看全部</a>
     </div>
 
+    {{- /* 获取该分类的文章，排除已展示的文章 */ -}}
+    {{- $categoryPosts := slice -}}
+    {{- range .taxonomy.Pages -}}
+      {{- if lt (len $categoryPosts) $postsPerCategory -}}
+        {{- $currentPage := . -}}
+        {{- $isDisplayed := false -}}
+
+        {{- /* 检查是否已经在其他分类中展示过 */ -}}
+        {{- range $displayedPages -}}
+          {{- if eq .File.UniqueID $currentPage.File.UniqueID -}}
+            {{- $isDisplayed = true -}}
+          {{- end -}}
+        {{- end -}}
+
+        {{- if not $isDisplayed -}}
+          {{- $categoryPosts = $categoryPosts | append $currentPage -}}
+          {{- $displayedPages = $displayedPages | append $currentPage -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+
     <!-- Web端显示纵向卡片网格 -->
     <div class="hidden md:grid md:grid-cols-3 gap-x-6 gap-y-10">
-      {{ range first $postsPerCategory .taxonomy.Pages }}
+      {{ range $categoryPosts }}
         {{- partial "content/card-vertical" . -}}
       {{ end }}
     </div>
 
     <!-- 移动端显示横向卡片列表 -->
     <div class="md:hidden space-y-4">
-      {{ range first $postsPerCategory .taxonomy.Pages }}
+      {{ range $categoryPosts }}
         {{- partial "content/card" . -}}
       {{ end }}
     </div>

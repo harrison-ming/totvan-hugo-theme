@@ -3,25 +3,7 @@
 
   <!-- 侧边栏广告位 -->
   {{- if not .IsHome -}}
-  <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
-    {{- if site.Params.adsense.enable -}}
-    <!-- Google AdSense 自适应广告 -->
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="fluid"
-         data-ad-layout-key="-6t+ed+2i-1n-4w"
-         data-ad-client="{{ site.Params.adsense.client }}"
-         data-ad-slot="{{ site.Params.adsense.sidebar_slot }}"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-    {{- else -}}
-    <!-- 占位图片（开发环境） -->
-    <div style="max-width: 100%; width: 100%; aspect-ratio: 300/250; border: 2px dashed #93C5FD; background: #EFF6FF; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-      <span style="color: #3B82F6; font-size: 14px; font-weight: 500;">AdSense 300x250 (未启用)</span>
-    </div>
-    {{- end -}}
-  </div>
+    {{- partial "ads/sidebar-ad.html" . -}}
   {{- end -}}
 
   <!-- 小红书推广图片轮播（可配置） -->

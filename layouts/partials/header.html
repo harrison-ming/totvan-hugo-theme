@@ -1,31 +1,3 @@
-<style>
-/* Header 广告样式 - 使用品牌色渐变，移除闪烁动画 */
-.header-ad-link {
-	display: inline-block;
-	padding: 0.75rem 1.5rem;
-	background: linear-gradient(135deg, #06b6d4 0%, #22c55e 100%);
-	color: white;
-	text-decoration: none;
-	font-size: 1.1rem;
-	font-weight: 600;
-	white-space: nowrap;
-	border-radius: 0.5rem;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	transition: all 0.3s ease;
-}
-.header-ad-link:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-	background: linear-gradient(135deg, #0891b2 0%, #16a34a 100%);
-}
-@media (max-width: 768px) {
-	.header-ad-link {
-		font-size: 0.95rem;
-		padding: 0.625rem 1rem;
-	}
-}
-</style>
-
 <div class="sticky-header" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
 <!-- 第一行：Logo + 站点名 + 广告 -->
 <div class="bg-white border-b border-gray-200">
@@ -48,13 +20,7 @@
 		</div>
 
 		<!-- 广告区域 -->
-		{{ if site.Params.headerAd.enabled }}
-		<div>
-			<a href="{{ site.Params.headerAd.targetUrl }}" class="header-ad-link" target="_blank" rel="noopener">
-				{{ site.Params.headerAd.text }}
-			</a>
-		</div>
-		{{ end }}
+		{{- partial "ads/header-ad.html" . -}}
 	</div>
 </div>
 

@@ -91,18 +91,58 @@ disqusShortname = '' # <- Get form here : https://disqus.com
     height = 60
     alt = "网站 Logo"
 
-  # Header广告配置
+  # Header 广告配置（导航栏右上角）
   [params.headerAd]
-    enabled = false  # 设置为 true 启用 Header 广告
+    enabled = false  # 设置为 true 启用 Header 广告，false 则不显示
     text = "欢迎访问我们的广告商!"  # 广告文字
     targetUrl = "https://example.com/"  # 广告链接
+    target = "_blank"  # 可选，默认 "_blank"
 
-  # Google AdSense配置
+  # Google AdSense配置（旧版，向后兼容）
   [params.adsense]
     enable = false  # 设置为 true 启用 AdSense
     client = "ca-pub-xxxxxx"
     sidebar_slot = "xxxxxx"
     article_slot = "xxxxxx"
+
+  # 侧边栏广告配置（新版，推荐使用）
+  [params.sidebarAd]
+    mode = "none"  # 可选值: "none" | "custom" | "adsense"
+
+    # 自定义广告配置 (mode = "custom" 时使用)
+    [params.sidebarAd.custom]
+      image = "/images/ads/sidebar-ad.png"
+      link = "https://example.com"
+      alt = "广告描述"
+      title = "广告标题"  # 可选
+      target = "_blank"  # 可选，默认 "_blank"
+
+    # AdSense 配置 (mode = "adsense" 时使用)
+    [params.sidebarAd.adsense]
+      client = "ca-pub-xxxxxx"
+      slot = "xxxxxx"
+
+  # 文章内广告配置（评论区下方，推荐阅读上方）
+  [params.articleAd]
+    mode = "none"  # 可选值: "none" | "custom" | "adsense"
+
+    # 自定义广告配置 (mode = "custom" 时使用)
+    [params.articleAd.custom]
+      image = "/images/ads/article-ad.png"
+      link = "https://example.com"
+      alt = "广告描述"
+      title = "广告标题"  # 可选
+      target = "_blank"  # 可选，默认 "_blank"
+
+    # AdSense 配置 (mode = "adsense" 时使用)
+    [params.articleAd.adsense]
+      client = "ca-pub-xxxxxx"
+      slot = "xxxxxx"
+
+  # 分类页面配置
+  [params.categoryPage]
+    minArticles = 20  # 主要分类的最小文章数阈值（默认 20）
+    showLowFrequency = true  # 是否显示"查看更多分类"展开按钮（默认 true）
 
   [params.author]
     name = '作者名称'

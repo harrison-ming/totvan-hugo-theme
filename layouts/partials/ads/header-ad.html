@@ -1,0 +1,53 @@
+{{- /*
+  Header 广告位组件（导航栏右侧）
+
+  支持两种模式:
+  1. enabled = false - 不展示广告 (默认)
+  2. enabled = true - 展示自定义广告
+
+  配置示例:
+  [params.headerAd]
+    enabled = true
+    text = "欢迎访问我们的广告商!"
+    targetUrl = "https://example.com/"
+    target = "_blank"  # 可选，默认 "_blank"
+*/ -}}
+
+{{- if site.Params.headerAd.enabled -}}
+<style>
+/* Header 广告样式 - 使用品牌色渐变，移除闪烁动画 */
+.header-ad-link {
+	display: inline-block;
+	padding: 0.75rem 1.5rem;
+	background: linear-gradient(135deg, #06b6d4 0%, #22c55e 100%);
+	color: white;
+	text-decoration: none;
+	font-size: 1.1rem;
+	font-weight: 600;
+	white-space: nowrap;
+	border-radius: 0.5rem;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+}
+.header-ad-link:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	background: linear-gradient(135deg, #0891b2 0%, #16a34a 100%);
+}
+@media (max-width: 768px) {
+	.header-ad-link {
+		font-size: 0.95rem;
+		padding: 0.625rem 1rem;
+	}
+}
+</style>
+
+<div>
+	<a href="{{ site.Params.headerAd.targetUrl }}"
+	   class="header-ad-link"
+	   target="{{ site.Params.headerAd.target | default "_blank" }}"
+	   rel="noopener">
+		{{ site.Params.headerAd.text }}
+	</a>
+</div>
+{{- end -}}

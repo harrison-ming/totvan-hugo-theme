@@ -71,22 +71,8 @@
       <!-- Waline评论区 (方案C优化: 前置,距离文章仅72px) -->
       {{- partial "comments/waline.html" . -}}
 
-      <!-- Google AdSense 文章内广告 -->
-      {{- if site.Params.adsense.enable -}}
-      <div class="my-8" style="margin-top: 2rem; margin-bottom: 2rem;">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ site.Params.adsense.client }}"
-             crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-             style="display:block; text-align:center;"
-             data-ad-layout="in-article"
-             data-ad-format="fluid"
-             data-ad-client="{{ site.Params.adsense.client }}"
-             data-ad-slot="{{ site.Params.adsense.article_slot }}"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-      </div>
-      {{- end -}}
+      <!-- 文章内广告位（评论区下方，推荐阅读上方） -->
+      {{- partial "ads/article-ad.html" . -}}
 
       <div id="related-post" class="">
 

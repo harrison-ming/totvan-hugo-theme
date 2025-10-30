@@ -14,12 +14,9 @@
 {{- end -}}
 {{- $categories = sort $categories "count" "desc" -}}
 
-{{- /* 前7个显示在导航栏，其余放下拉菜单 */ -}}
-{{- $topCategories := $categories | first 7 -}}
-{{- $moreCategories := slice -}}
-{{- if gt (len $categories) 7 -}}
-  {{- $moreCategories = after 7 $categories | first 8 -}}
-{{- end -}}
+{{- /* 桌面端显示前10个分类，移动端显示前6个分类 */ -}}
+{{- $topCategoriesDesktop := $categories | first 10 -}}
+{{- $topCategoriesMobile := $categories | first 6 -}}
 
 <nav class="bg-primary-500 shadow-md">
   <div class="max-w-7xl mx-auto px-2 md:px-4">
@@ -34,8 +31,8 @@
         </a>
       </li>
 
-      {{/* 热门分类 1-7 */}}
-      {{- range $cat := $topCategories -}}
+      {{/* 移动端和桌面端都显示的前6个分类 */}}
+      {{- range $index, $cat := $topCategoriesMobile -}}
       {{- $catURL := printf "/categories/%s/" ($cat.name | urlize) -}}
       <li class="flex-shrink-0">
         <a href="{{ $catURL | relURL }}"
@@ -46,12 +43,28 @@
       </li>
       {{- end -}}
 
+      {{/* 桌面端额外显示的第7-10个分类（移动端隐藏） */}}
+      {{- range $index, $cat := $topCategoriesDesktop -}}
+        {{- if ge $index 6 -}}
+        {{- $catURL := printf "/categories/%s/" ($cat.name | urlize) -}}
+        <li class="flex-shrink-0 hide-on-mobile">
+          <a href="{{ $catURL | relURL }}"
+             class="nav-link block text-white hover:bg-primary-600 transition-colors whitespace-nowrap {{ if eq $page.RelPermalink $catURL }}bg-primary-600{{ end }}"
+             {{ if eq $page.RelPermalink $catURL }}aria-current="page"{{ end }}>
+            {{ $cat.name }}
+          </a>
+        </li>
+        {{- end -}}
+      {{- end -}}
+
       {{/* 全部分类链接 */}}
-      <li class="flex-shrink-0">
+      <li class="flex-shrink-0" style="position: relative;">
         <a href="{{ "/categories/" | relURL }}"
-           class="nav-link block text-white hover:bg-primary-600 transition-colors whitespace-nowrap">
-          全部分类
+           class="nav-link nav-link-categories text-white hover:bg-primary-600 transition-colors whitespace-nowrap">
+          <svg class="category-grid-icon" style="width: 18px; height: 18px; flex-shrink: 0;" fill="currentColor" viewBox="0 0 20 20"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          <span class="category-text">全部分类</span>
         </a>
+        <span class="category-badge">{{ len site.Taxonomies.categories }}</span>
       </li>
 
       {{/* 搜索按钮 - 暂时隐藏,等待后续实现搜索功能 */}}

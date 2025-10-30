@@ -1,0 +1,86 @@
+{{- /*
+  文章内广告位组件（评论区下方，推荐阅读上方）
+
+  支持三种模式:
+  1. mode = "none" - 不展示任何广告 (默认)
+  2. mode = "custom" - 展示自定义图片广告
+  3. mode = "adsense" - 展示 Google AdSense 广告
+
+  配置示例:
+  [params.articleAd]
+    mode = "adsense"  # 可选值: "none" | "custom" | "adsense"
+
+    # 自定义广告配置
+    [params.articleAd.custom]
+      image = "/images/ads/article-ad.png"
+      link = "https://example.com"
+      alt = "广告描述"
+      title = "广告标题"
+      target = "_blank"  # 可选，默认 "_blank"
+
+    # AdSense 配置
+    [params.articleAd.adsense]
+      client = "ca-pub-xxxxxx"
+      slot = "xxxxxx"
+*/ -}}
+
+{{- $mode := "none" -}}
+{{- $config := dict -}}
+
+{{- /* 获取广告配置 */ -}}
+{{- if site.Params.articleAd -}}
+  {{- $mode = site.Params.articleAd.mode | default "none" -}}
+  {{- $config = site.Params.articleAd -}}
+{{- else if site.Params.adsense.enable -}}
+  {{- /* 向后兼容旧配置 */ -}}
+  {{- $mode = "adsense" -}}
+  {{- $config = dict "adsense" (dict
+      "client" site.Params.adsense.client
+      "slot" site.Params.adsense.article_slot) -}}
+{{- end -}}
+
+{{- /* 根据模式渲染广告 */ -}}
+{{- if eq $mode "adsense" -}}
+  {{- /* Google AdSense 文章内广告 */ -}}
+  {{- with $config.adsense -}}
+  <div class="my-8" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ .client }}"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-layout="in-article"
+         data-ad-format="fluid"
+         data-ad-client="{{ .client }}"
+         data-ad-slot="{{ .slot }}"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  </div>
+  {{- end -}}
+
+{{- else if eq $mode "custom" -}}
+  {{- /* 自定义图片广告 */ -}}
+  {{- with $config.custom -}}
+  <div class="my-8" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+      <a href="{{ .link }}"
+         target="{{ .target | default "_blank" }}"
+         rel="noopener noreferrer"
+         class="block hover:opacity-90 transition-opacity"
+         {{- with .title }} title="{{ . }}"{{ end }}>
+        <img src="{{ .image }}"
+             alt="{{ .alt | default "广告" }}"
+             class="w-full h-auto rounded"
+             style="max-width: 100%; height: auto; display: block;"
+             loading="lazy">
+        {{- with .title -}}
+        <p class="text-sm text-gray-600 mt-2 text-center">{{ . }}</p>
+        {{- end -}}
+      </a>
+    </div>
+  </div>
+  {{- end -}}
+
+{{- else if eq $mode "none" -}}
+  {{- /* 不渲染任何内容，推荐阅读会自动上移 */ -}}
+{{- end -}}

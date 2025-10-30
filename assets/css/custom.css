@@ -480,3 +480,87 @@ nav ul.overflow-x-auto {
     padding: 12px 16px 0 16px;
   }
 }
+
+/* 全部分类徽章脉冲动画 */
+@keyframes badge-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+/* 全部分类徽章样式 */
+.category-badge {
+  position: absolute;
+  top: 4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+  animation: badge-pulse 2s infinite;
+  pointer-events: none;
+  line-height: 1.2;
+}
+
+/* 全部分类导航项特殊样式 - 与其他导航项对齐 */
+.nav-link-categories {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: 6px;
+  padding: 12px 8px 0 8px !important;
+  height: 48px;
+  vertical-align: top;
+}
+
+.nav-link-categories svg {
+  position: relative;
+  top: 2px;
+}
+
+@media (min-width: 768px) {
+  .nav-link-categories {
+    padding: 12px 16px 0 16px !important;
+  }
+}
+
+/* 全部分类导航项hover效果 - SVG图标放大 */
+.nav-link:hover .category-grid-icon {
+  transform: scale(1.15);
+  transition: transform 0.3s ease;
+}
+
+.category-grid-icon {
+  transition: transform 0.3s ease;
+}
+
+/* 响应式导航栏 - 移动端隐藏第7-10个分类 */
+@media (max-width: 767px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  /* 移动端"全部分类"只显示图标，隐藏文字以节省空间 */
+  .nav-link-categories .category-text {
+    display: none;
+  }
+
+  /* 移动端调整"全部分类"的padding */
+  .nav-link-categories {
+    padding: 12px 8px 0 8px !important;
+    gap: 0 !important;
+  }
+
+  /* 移动端SVG图标居中 */
+  .nav-link-categories svg {
+    margin: 0 auto;
+  }
+}
